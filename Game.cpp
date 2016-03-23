@@ -89,7 +89,6 @@ void Game::assignSounds() {
     }
 }
 
-
 void Game::handleEvent(SDL_Event e) {
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
