@@ -34,3 +34,7 @@ int Tile::getXLoc() {
 int Tile::getYLoc() {
     return yLoc;
 }
+
+int Tile::getType() {
+    return tileType;
+}

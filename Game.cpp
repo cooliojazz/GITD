@@ -1,6 +1,6 @@
 #include "Game.h"
 
-void Game::init() {
+void Game::init(int width, int height) {
     Level* currLevel = NULL;
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
     string line;
@@ -56,7 +56,27 @@ void Game::init() {
         }
 
     }
+    
+    //Init SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        throw new runtime_error("Cannot Initialize SDL.");
+    }
+    window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+}
 
+SDL_Texture getTileTex(int type) {
+    return NULL;
+}
+
+void Game::render() {
+    Level* l = player->getLevel();
+    for (int x = 0; x < ?; x++) {
+        for (int y = 0; y < ?; y++) {
+            Tile* t = l->getTile(x, y);
+            SDL_RenderCopy(renderer, getTileTex(t->getType()), new SDL_Rect(?), new SDL_Rect(?));
+        }
+    }
 }
 
 void Game::assignSounds() {
@@ -89,33 +109,35 @@ void Game::assignSounds() {
     }
 }
 
+
 void Game::handleEvent(SDL_Event e) {
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
-    if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_UP)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(NORTH);
-        else
-            player->move(NORTH);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RIGHT)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(EAST);
-        else
-            player->move(EAST);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_DOWN)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(SOUTH);
-        else
-            player->move(SOUTH);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_LEFT)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(WEST);
-        else
-            player->move(WEST);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_e) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_x)) {
-        player->useBell();
-    } else if ((e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_q) || (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_z)) {
-        player->laserOff();
+    if (e.type == SDL_KEYDOWN) {
+        if ((e.key.keysym.sym == SDLK_w) || (e.key.keysym.sym == SDLK_UP)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(NORTH);
+            else
+                player->move(NORTH);
+        } else if ((e.key.keysym.sym == SDLK_d) || (e.key.keysym.sym == SDLK_RIGHT)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(EAST);
+            else
+                player->move(EAST);
+        } else if ((e.key.keysym.sym == SDLK_s) || (e.key.keysym.sym == SDLK_DOWN)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(SOUTH);
+            else
+                player->move(SOUTH);
+        } else if ((e.key.keysym.sym == SDLK_a) || (e.key.keysym.sym == SDLK_LEFT)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(WEST);
+            else
+                player->move(WEST);
+        } else if ((e.key.keysym.sym == SDLK_e) || (e.key.keysym.sym == SDLK_x)) {
+            player->useBell();
+        } else if ((e.key.keysym.sym == SDLK_q) || (e.key.keysym.sym == SDLK_z)) {
+            player->laserOff();
+        }
     }
-
 }

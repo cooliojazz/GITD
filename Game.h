@@ -21,14 +21,18 @@ using namespace std;
 class Game {
     int levelCount;
     Player* player;
-    SDL_Window* win = NULL;
+    SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     //Sound North 
     //Sound East 
     //Sound South 
     //Sound West 
-
-    void init();
+    
+public:
+    
+    void init(int width, int height);
+    
+    void render();
 
     void assignSounds();
 

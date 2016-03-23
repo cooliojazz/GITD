@@ -9,6 +9,7 @@
 #define	LEVEL_H
 
 #include "Tile.h"
+#include <stdio.h>
 #include <vector>
 
 using namespace std;
