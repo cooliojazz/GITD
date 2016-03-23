@@ -46,10 +46,12 @@ void Player::laserOn(directionT direction) {
     //Use SDL_RenderDrawLine(renderer, playerX, playerY, destX, destY) to draw a line
     //Need a direction in the input params
     //Need to test where there is a wall (? tiles in desired direction, if not, to edge of screen
+    laser = true;
 }
 
 void Player::laserOff() {
     //?????????????????????
+    laser = false;
 }
 
 void Player::setLevel(Level *inLevel) {

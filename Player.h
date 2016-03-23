@@ -9,11 +9,13 @@
 #define	PLAYER_H
 
 #include "Tile.h"
+#include <math.h>
 #include "Level.h"
 
 class Player {
     Tile *currentTile; //The tile the player is currently on
     Level *currentLevel; //The level the player is currently on
+    bool laser;
 
 public:
 

@@ -93,30 +93,31 @@ void Game::assignSounds() {
 void Game::handleEvent(SDL_Event e) {
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
-    if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_UP)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(NORTH);
-        else
-            player->move(NORTH);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RIGHT)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(EAST);
-        else
-            player->move(EAST);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_DOWN)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(SOUTH);
-        else
-            player->move(SOUTH);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_LEFT)) {
-        if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
-            player->laserOn(WEST);
-        else
-            player->move(WEST);
-    } else if ((e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_e) || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_x)) {
-        player->useBell();
-    } else if ((e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_q) || (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_z)) {
-        player->laserOff();
+    if (e.type == SDL_KEYDOWN) {
+        if ((e.key.keysym.sym == SDLK_w) || (e.key.keysym.sym == SDLK_UP)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(NORTH);
+            else
+                player->move(NORTH);
+        } else if ((e.key.keysym.sym == SDLK_d) || (e.key.keysym.sym == SDLK_RIGHT)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(EAST);
+            else
+                player->move(EAST);
+        } else if ((e.key.keysym.sym == SDLK_s) || (e.key.keysym.sym == SDLK_DOWN)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(SOUTH);
+            else
+                player->move(SOUTH);
+        } else if ((e.key.keysym.sym == SDLK_a) || (e.key.keysym.sym == SDLK_LEFT)) {
+            if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
+                player->laserOn(WEST);
+            else
+                player->move(WEST);
+        } else if ((e.key.keysym.sym == SDLK_e) || (e.key.keysym.sym == SDLK_x)) {
+            player->useBell();
+        } else if ((e.key.keysym.sym == SDLK_q) || (e.key.keysym.sym == SDLK_z)) {
+            player->laserOff();
+        }
     }
-
 }
