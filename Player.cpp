@@ -54,6 +54,10 @@ void Player::laserOff() {
     laser = false;
 }
 
+Level* Player::getLevel() {
+    return currentLevel;
+}
+
 void Player::setLevel(Level *inLevel) {
     currentLevel = inLevel;
 }

@@ -27,6 +27,8 @@ public:
 
     void laserOff();
 
+    Level* getLevel();
+    
     void setLevel(Level *inLevel);
 
     void setTile(Tile *inTile);

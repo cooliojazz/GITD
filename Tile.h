@@ -25,6 +25,8 @@ public:
     int getXLoc();
 
     int getYLoc();
+    
+    int getType();
 
 };
 

@@ -1,6 +1,6 @@
 #include "Game.h"
 
-void Game::init() {
+void Game::init(int width, int height) {
     Level* currLevel = NULL;
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
     string line;
@@ -56,7 +56,27 @@ void Game::init() {
         }
 
     }
+    
+    //Init SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        throw new runtime_error("Cannot Initialize SDL.");
+    }
+    window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+}
 
+SDL_Texture getTileTex(int type) {
+    return NULL;
+}
+
+void Game::render() {
+    Level* l = player->getLevel();
+    for (int x = 0; x < ?; x++) {
+        for (int y = 0; y < ?; y++) {
+            Tile* t = l->getTile(x, y);
+            SDL_RenderCopy(renderer, getTileTex(t->getType()), new SDL_Rect(?), new SDL_Rect(?));
+        }
+    }
 }
 
 void Game::assignSounds() {
