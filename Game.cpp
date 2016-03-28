@@ -41,7 +41,7 @@ void Game::init(int width, int height) {
             int count = 0;
             while (posX < levelX) {
                 if (count % 2 == 1) {
-                    Tile* temp = new Tile(inputLine.get(), inputLine.get(), posX, posY);
+                    Tile* temp = new Tile(inputLine.get(),inputLine.get(), posX, posY);
                     currLevel->setTile(posX, posY, temp);
                     count++;
                     posX++;
@@ -65,6 +65,7 @@ void Game::init(int width, int height) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+/*
 SDL_Texture getTileTex(int type) {
     return NULL;
 }
@@ -78,6 +79,7 @@ void Game::render() {
         }
     }
 }
+*/
 
 void Game::assignSounds() {
     int start = rand() % 4;

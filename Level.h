@@ -46,6 +46,8 @@ public:
 
     void setTile(int xDest, int yDest, Tile* inTile);
 
+	
+
 };
 
 #endif	/* LEVEL_H */

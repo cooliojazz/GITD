@@ -9,6 +9,7 @@
 #define	GAME_H
 
 #include "SDL.h"
+#include "SDL_mixer.h"
 #include <iostream>
 #include <fstream>
 #include <string>
