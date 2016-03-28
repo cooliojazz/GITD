@@ -20,6 +20,13 @@ void Player::move(directionT direction) {
     }
 }
 
+
+
+void Player::render()
+{
+	
+}
+
 void Player::useBell() {
     int xDiff = currentTile->getXLoc() - currentLevel->getEnd()->getXLoc(); //The X-difference between the players current tile and the level's end tile
     int yDiff = currentTile->getYLoc() - currentLevel->getEnd()->getYLoc(); //The Y-difference between the players current tile and the level's end tile

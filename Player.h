@@ -32,6 +32,7 @@ public:
     void setLevel(Level *inLevel);
 
     void setTile(Tile *inTile);
+	void render();
 
 };
 
