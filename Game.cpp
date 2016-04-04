@@ -1,6 +1,9 @@
 #include "Game.h"
 
+SDL_Texture* tex;
+
 void Game::init(int width, int height) {
+    cout << "Initializing game..." << endl;
     Level* currLevel = NULL;
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
     string line;
@@ -13,6 +16,7 @@ void Game::init(int width, int height) {
 
     //read file stuff...
     ifstream gameFile("GITDTextDoc.txt");
+    cout << "Reading game file..." << endl;
     while (getline(gameFile, line)) {
         istringstream inputLine(line);
         inputLine >> firstChar;
@@ -39,7 +43,8 @@ void Game::init(int width, int height) {
         } else if (firstChar == 'L') {//create new level when level header (length, height) is read
             //LevelX = first read, levelY = second read
             inputLine >> levelX >> levelY;
-            Level *newLevel = new Level();
+            cout << "Adding new level of size " << levelX << "x" << levelY << endl;
+            Level* newLevel = new Level(levelX, levelY);
 
             if (currLevel != NULL) {
                 currLevel->setNext(newLevel);
@@ -51,48 +56,69 @@ void Game::init(int width, int height) {
             posX = 0;
             posY = 0;
         } else if (firstChar == '(') {
-            int count = 0;
-            while (posX < levelX) {
-                if (count % 2 == 1) {
-                    Tile* temp = new Tile(inputLine.get(),inputLine.get(), posX, posY);
-                    currLevel->setTile(posX, posY, temp);
-                    count++;
-                    posX++;
-                } else {
-                    inputLine.get();
-                    count++;
-                }
-            }
-
+            cout << "Reading level line " << posY << endl;
+//            int count = 0;
             posX = 0;
+            while (posX < levelX) {
+//                if (count % 2 == 1) {
+                    int type;
+                    int rot;
+                    inputLine >> type >> rot;
+                    cout << "Tile " << posX << " is " << type << ", " << rot << endl;
+                    currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
+//                    count++;
+                    posX++;
+//                } else {
+//                    inputLine.get();
+//                    count++;
+//                }
+            }
+            cout << "Finished level line " << posY << endl;
             posY++;
         }
 
     }
     
     //Init SDL
+    cout << "Initializing SDL..." << endl;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw new runtime_error("Cannot Initialize SDL.");
     }
     window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    cout << "Creating Texture..." << endl;
+    SDL_Surface* ttex = SDL_LoadBMP("Start_tile.bmp");
+    tex = SDL_CreateTextureFromSurface(renderer, ttex);
+    SDL_FreeSurface(ttex);
+    cout << "Done!" << endl;
 }
 
-/*
-SDL_Texture getTileTex(int type) {
-    return NULL;
+
+SDL_Texture* getTileTex(int type) {
+    return tex;
+}
+
+SDL_Rect* createRect(int x, int y, int w, int h) {
+    SDL_Rect* rect = new SDL_Rect();
+    rect->x = x;
+    rect->y = y;
+    rect->w = w;
+    rect->h = h;
+    return rect;
 }
 
 void Game::render() {
+    cout << "Render loop!" << endl;
     Level* l = player->getLevel();
-    for (int x = 0; x < ?; x++) {
-        for (int y = 0; y < ?; y++) {
+    SDL_RenderClear(renderer);
+    for (int x = 0; x < l->getWidth(); x++) {
+        for (int y = 0; y < l->getHeight(); y++) {
             Tile* t = l->getTile(x, y);
-            SDL_RenderCopy(renderer, getTileTex(t->getType()), new SDL_Rect(?), new SDL_Rect(?));
+            SDL_RenderCopy(renderer, getTileTex(t->getType()), NULL, createRect(x * 32, y * 32, 32, 32));
         }
     }
+    SDL_RenderPresent(renderer);
 }
-*/
 
 
 
