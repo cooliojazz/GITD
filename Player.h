@@ -11,6 +11,7 @@
 #include "Tile.h"
 #include <math.h>
 #include "Level.h"
+#include "SDL_mixer.h"
 
 class Player {
     Tile *currentTile; //The tile the player is currently on

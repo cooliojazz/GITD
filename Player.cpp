@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "SDL_mixer.h"
+
 
 void Player::move(directionT direction) {
     if (currentTile->moveValid(direction)) {
