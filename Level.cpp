@@ -10,6 +10,8 @@ Level::Level() {
 void Level::insertTile(int tileType, int orientation, int x, int y) {
     Tile* temp = new Tile(tileType, orientation, x, y);
     tileArray[x][y] = temp;
+
+	
 }
 
 Tile* Level::getEnd() {

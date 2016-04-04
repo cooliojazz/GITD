@@ -19,15 +19,15 @@
 
 using namespace std;
 
+
+
 class Game {
     int levelCount;
     Player* player;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
-    //Sound North 
-    //Sound East 
-    //Sound South 
-    //Sound West 
+	
+
     
 public:
     
@@ -35,8 +35,7 @@ public:
     
     void render();
 
-    void assignSounds();
-
+    
     void handleEvent(SDL_Event e);
 };
 

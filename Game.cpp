@@ -6,6 +6,11 @@ void Game::init(int width, int height) {
     string line;
     char firstChar;
 
+	char filename[64];
+
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+	
+
     //read file stuff...
     ifstream gameFile("GITDTextDoc.txt");
     while (getline(gameFile, line)) {
@@ -20,9 +25,17 @@ void Game::init(int width, int height) {
             //Fourth - West
         } else if (firstChar == 'S') {
             //First Sound is North
+			inputLine.get(filename, 64, ' ');                  //Problems with excess space?
+			player->setNorth(Mix_LoadWAV(filename));
             //Second - East
+			inputLine.get(filename, 64, ' ');
+			player->setEast(Mix_LoadWAV(filename));
             //Third - South
+			inputLine.get(filename, 64, ' ');
+			player->setSouth(Mix_LoadWAV(filename));
             //Fourth - West
+			inputLine.get(filename, 64, ' ');
+			player->setWest(Mix_LoadWAV(filename));
         } else if (firstChar == 'L') {//create new level when level header (length, height) is read
             //LevelX = first read, levelY = second read
             inputLine >> levelX >> levelY;
@@ -81,35 +94,6 @@ void Game::render() {
 }
 */
 
-void Game::assignSounds() {
-    int start = rand() % 4;
-
-    switch (start) {
-            //case 0 is default
-        case 1:				//Maybe?
-            //sound temp = North
-            //sound north = east
-            //sound east = south
-            //sound south = west
-            //sound west = temp
-            true;
-        case 2:				//Maybe?
-            //sound temp1 = North
-            //sound temp2 = east
-            //sound north = south
-            //sound east = west
-            //sound south = temp
-            //sound west = east
-            true;
-        case 3:				//Maybe?
-            //sound temp = north
-            //sound north = west
-            //sound west = south
-            //sound south = east
-            //sound east = temp
-            true;
-    }
-}
 
 
 void Game::handleEvent(SDL_Event e) {

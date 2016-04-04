@@ -17,6 +17,11 @@ class Player {
     Level *currentLevel; //The level the player is currently on
     bool laser;
 
+	Mix_Chunk *North;
+	Mix_Chunk *West;
+	Mix_Chunk *South;
+	Mix_Chunk *East;
+
 public:
 
     void move(directionT direction);
@@ -32,6 +37,17 @@ public:
     void setLevel(Level *inLevel);
 
     void setTile(Tile *inTile);
+
+	void assignSounds();
+
+	void setNorth(Mix_Chunk *newSound);
+
+	void setEast(Mix_Chunk *newSound);
+
+	void setSouth(Mix_Chunk *newSound);
+
+	void setWest(Mix_Chunk *newSound);
+
 
 };
 
