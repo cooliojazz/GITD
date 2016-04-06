@@ -12,6 +12,7 @@ bool loadMedia(){
 	}
 }
 
+
 void Player::move(directionT direction) {
     if (currentTile->moveValid(direction)) {
         switch (direction) {				//Note: Doesn't contain any code for playing movement animation
@@ -28,6 +29,7 @@ void Player::move(directionT direction) {
         if (currentLevel->getEnd() == currentTile) {
             currentLevel = currentLevel->getNextLevel();
             currentTile = currentLevel->getStart();
+			assignSounds();
         }
     }
 }
@@ -44,19 +46,36 @@ void Player::useBell() {
 
     int distance = sqrt(xDiff ^ 2 + yDiff ^ 2);  //The straight distance between the player's tile and the end
 
-    if (xDiff > 0)
-        //Play sound for West (send in distance as param for volume/loudness)
-        true;
+	int volLevel;
+
+	if (distance < 2)
+	{
+		volLevel = 100;
+	}
+	else if (distance < 4)
+	{
+		volLevel = 75;
+	}
+	else
+	{
+		volLevel = 50;
+	}
+
+	Mix_Volume(-1, volLevel);
+
+	if (xDiff > 0)
+		//Play sound for West (send in distance as param for volume/loudness)
+		Mix_PlayChannel(-1, West, 0);
     else if (xDiff < 0)
         //Play sound for East (send in distance as param for volume/loudness)
-        true;
+		Mix_PlayChannel(-1, East, 0);
 
     if (yDiff > 0)
         //Play sound for North (send in distance as param for volume/loudness)
-        true;
+		Mix_PlayChannel(-1, North, 0);
     else if (yDiff < 0)
         //Play sound for South (send in distance as param for volume/loudness)
-        true;
+		Mix_PlayChannel(-1, South, 0);
 }
 
 void Player::laserOn(directionT direction) {
@@ -82,4 +101,72 @@ void Player::setLevel(Level *inLevel) {
 
 void Player::setTile(Tile *inTile) {
     currentTile = inTile;
+}
+
+void Player::setNorth(Mix_Chunk *newSound)
+{
+	 North = newSound;
+}
+
+void Player::setEast(Mix_Chunk *newSound)
+{
+	East = newSound;
+}
+
+void Player::setSouth(Mix_Chunk *newSound)
+{
+	South = newSound;
+}
+
+void Player::setWest(Mix_Chunk *newSound)
+{
+	West = newSound;
+}
+
+void Player::assignSounds() {
+	int start = rand() % 4;
+	Mix_Chunk *temp1;
+	Mix_Chunk *temp2;
+
+	switch (start) {
+		//case 0 is default
+	case 1:				
+		//sound temp = North
+		temp1 = North;
+		//sound north = east
+		North = East;
+		//sound east = south
+		East = South;
+		//sound south = west
+		South = West;
+		//sound west = temp
+		West = temp1;
+		true;
+	case 2:				
+		//sound temp1 = North
+		temp1 = North;
+		//sound temp2 = east
+		temp2 = East;
+		//sound north = south
+		North = South;
+		//sound east = west
+		East = West;
+		//sound south = temp
+		South = temp1;
+		//sound west = east
+		West = temp2;
+		true;
+	case 3:				
+		//sound temp = north
+		temp1 = North;
+		//sound north = west
+		North = West;
+		//sound west = south
+		West = South;
+		//sound south = east
+		South = East;
+		//sound east = temp
+		East = temp1;
+		true;
+	}
 }

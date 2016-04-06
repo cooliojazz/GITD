@@ -11,12 +11,17 @@
 #include "Tile.h"
 #include <math.h>
 #include "Level.h"
-#include "SDL_image.h"
+#include "SDL_mixer.h"
 
 class Player {
     Tile *currentTile; //The tile the player is currently on
     Level *currentLevel; //The level the player is currently on
     bool laser;
+
+	Mix_Chunk *North;
+	Mix_Chunk *West;
+	Mix_Chunk *South;
+	Mix_Chunk *East;
 
 public:
 
@@ -33,11 +38,19 @@ public:
     void setLevel(Level *inLevel);
 
     void setTile(Tile *inTile);
-	void render();
-	bool loadMedia();
+
+	void assignSounds();
+
+	void setNorth(Mix_Chunk *newSound);
+
+	void setEast(Mix_Chunk *newSound);
+
+	void setSouth(Mix_Chunk *newSound);
+
+	void setWest(Mix_Chunk *newSound);
+
 
 };
-const int WALKING_ANIMATION_FRAMES = 4;
-SDL_Rect PlayerSpriteClips[WALKING_ANIMATION_FRAMES];
+
 #endif	/* PLAYER_H */
 
