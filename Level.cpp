@@ -43,3 +43,4 @@ Tile* Level::getTile(int xDest, int yDest) {
 void Level::setTile(int xDest, int yDest, Tile* inTile) {
     tileArray[xDest][yDest] = inTile;
 }
+

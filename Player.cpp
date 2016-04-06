@@ -1,4 +1,16 @@
 #include "Player.h"
+Player PlayerSpriteSheet;
+
+bool loadMedia(){
+	bool success = true;
+	if (!PlayerSpriteSheet.loadFromFile("path")) {
+		//failed
+		success = false;
+	}
+	else {
+		
+	}
+}
 
 void Player::move(directionT direction) {
     if (currentTile->moveValid(direction)) {
@@ -21,10 +33,9 @@ void Player::move(directionT direction) {
 }
 
 
-
 void Player::render()
 {
-	
+	PlayerTexture.render();
 }
 
 void Player::useBell() {

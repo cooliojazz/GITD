@@ -11,6 +11,7 @@
 #include "Tile.h"
 #include <math.h>
 #include "Level.h"
+#include "SDL_image.h"
 
 class Player {
     Tile *currentTile; //The tile the player is currently on
@@ -33,8 +34,10 @@ public:
 
     void setTile(Tile *inTile);
 	void render();
+	bool loadMedia();
 
 };
-
+const int WALKING_ANIMATION_FRAMES = 4;
+SDL_Rect PlayerSpriteClips[WALKING_ANIMATION_FRAMES];
 #endif	/* PLAYER_H */
 
