@@ -83,8 +83,7 @@ Level* Player::getLevel() {
 }
 
 void Player::setLevel(Level *inLevel) {
-	Player* temp = this;
-    temp->currentLevel = inLevel;
+    currentLevel = inLevel;
 }
 
 void Player::setTile(Tile *inTile) {
