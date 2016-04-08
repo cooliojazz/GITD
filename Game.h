@@ -17,14 +17,18 @@
 #include <sstream>
 #include "Level.h"
 #include "Player.h"
+#include "TextureManager.cpp"
 
 using namespace std;
+
+int renderloop(void* g);
 
 class Game {
     int levelCount;
     Player* player;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    TextureManager texman;
     //Sound North 
     //Sound East 
     //Sound South 
@@ -38,7 +42,7 @@ public:
 
     void assignSounds();
 
-    void handleEvent(SDL_Event e);
+    void handleEvents();
 };
 
 

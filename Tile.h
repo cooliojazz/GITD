@@ -8,12 +8,12 @@
 #ifndef TILE_H
 #define	TILE_H
 
-enum directionT {NORTH = 0, SOUTH = 1, EAST = 2, WEST = 3};
-//enum tileT {START = 0, DEADEND = 1, STRAIGHT = 2, BEND = 3, TJUNCT = 4, FOURWAY = 5, EXIT = 6};
+enum directionT {NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3};
+enum tileT {START = 0, DEADEND = 1, STRAIGHT = 2, BEND = 3, TJUNCT = 4, FOURWAY = 5, EXIT = 6};
 
 class Tile {
-    int tileType; 
-    int orientation; // this * 90 to get rotation
+    tileT tileType; 
+    directionT orientation; // this * 90 to get rotation
     int xLoc; //The X-coordinate in the :level of the tile
     int yLoc; //The Y-coordiante in the level of the tile
 
@@ -27,7 +27,9 @@ public:
 
     int getYLoc();
     
-    int getType();
+    tileT getType();
+    
+    directionT getRot();
 
 };
 

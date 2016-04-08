@@ -3,12 +3,12 @@
 Tile::Tile(int type, int rotation, int x, int y) {
     xLoc = x;
     yLoc = y;
-    tileType = type;
-    orientation = rotation;
+    tileType = (tileT)type;
+    orientation = (directionT)rotation;
 }
 
 bool Tile::moveValid (directionT direction) {
-    switch (tileType) {
+    switch ((int)tileType) {
         case 1 || 0:
             if (direction == orientation) return true;
         case 2:
@@ -35,6 +35,10 @@ int Tile::getYLoc() {
     return yLoc;
 }
 
-int Tile::getType() {
+tileT Tile::getType() {
     return tileType;
+}
+
+directionT Tile::getRot() {
+    return orientation;
 }

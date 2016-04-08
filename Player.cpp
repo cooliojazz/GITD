@@ -1,9 +1,9 @@
 #include "Player.h"
 Player PlayerSpriteSheet;
 
-bool loadMedia(){
-	
-}
+//bool loadMedia(){
+//	
+//}
 
 
 void Player::move(directionT direction) {
@@ -25,12 +25,6 @@ void Player::move(directionT direction) {
 			assignSounds();
         }
     }
-}
-
-
-void Player::render()
-{
-	
 }
 
 void Player::useBell() {
@@ -89,7 +83,8 @@ Level* Player::getLevel() {
 }
 
 void Player::setLevel(Level *inLevel) {
-    currentLevel = inLevel;
+	Player* temp = this;
+    temp->currentLevel = inLevel;
 }
 
 void Player::setTile(Tile *inTile) {

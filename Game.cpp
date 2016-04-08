@@ -4,21 +4,29 @@ SDL_Texture* tex;
 
 void Game::init(int width, int height) {
     cout << "Initializing game..." << endl;
+    
+    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+    
+    //Init SDL
+    cout << "Initializing SDL..." << endl;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        throw new runtime_error("Cannot Initialize SDL.");
+    }
+    window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    cout << "SDL Initialized." << endl;
+    
+    player = new Player();
     Level* currLevel = NULL;
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
-    string line;
-    char firstChar;
-
-	char filename[64];
-
-	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-	
 
     //read file stuff...
-    ifstream gameFile("GITDTextDoc.txt");
+    ifstream gameFile("C:\\Users\\Ricky\\Documents\\NetBeansProjects\\GITD\\GITDTextDoc.txt");
     cout << "Reading game file..." << endl;
+    string line;
     while (getline(gameFile, line)) {
         istringstream inputLine(line);
+        char firstChar;
         inputLine >> firstChar;
 
         //animation stuff
@@ -27,19 +35,26 @@ void Game::init(int width, int height) {
             //Second - East
             //Third - South
             //Fourth - West
+        } else if (firstChar == 'T') {
+            string path;
+            int type;
+            inputLine >> path >> type;
+            cout << "Adding texture from " << path << " as " << type << endl;
+            texman.loadTexture(renderer, path, (tileT)type);
         } else if (firstChar == 'S') {
+            char filename[256];
             //First Sound is North
-			inputLine.get(filename, 64, ' ');                  //Problems with excess space?
-			player->setNorth(Mix_LoadWAV(filename));
+            inputLine.get(filename, 64, ' ');                  //Problems with excess space?
+            player->setNorth(Mix_LoadWAV(filename));
             //Second - East
-			inputLine.get(filename, 64, ' ');
-			player->setEast(Mix_LoadWAV(filename));
+            inputLine.get(filename, 64, ' ');
+            player->setEast(Mix_LoadWAV(filename));
             //Third - South
-			inputLine.get(filename, 64, ' ');
-			player->setSouth(Mix_LoadWAV(filename));
+            inputLine.get(filename, 64, ' ');
+            player->setSouth(Mix_LoadWAV(filename));
             //Fourth - West
-			inputLine.get(filename, 64, ' ');
-			player->setWest(Mix_LoadWAV(filename));
+            inputLine.get(filename, 64, ' ');
+            player->setWest(Mix_LoadWAV(filename));
         } else if (firstChar == 'L') {//create new level when level header (length, height) is read
             //LevelX = first read, levelY = second read
             inputLine >> levelX >> levelY;
@@ -57,45 +72,30 @@ void Game::init(int width, int height) {
             posY = 0;
         } else if (firstChar == '(') {
             cout << "Reading level line " << posY << endl;
-//            int count = 0;
             posX = 0;
             while (posX < levelX) {
-//                if (count % 2 == 1) {
-                    int type;
-                    int rot;
-                    inputLine >> type >> rot;
-                    cout << "Tile " << posX << " is " << type << ", " << rot << endl;
-                    currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
-//                    count++;
-                    posX++;
-//                } else {
-//                    inputLine.get();
-//                    count++;
-//                }
+                int type;
+                int rot;
+                inputLine >> type >> rot;
+                cout << "Tile " << posX << " is " << type << ", " << rot << endl;
+                currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
+                posX++;
             }
             cout << "Finished level line " << posY << endl;
             posY++;
         }
-
     }
-    
-    //Init SDL
-    cout << "Initializing SDL..." << endl;
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        throw new runtime_error("Cannot Initialize SDL.");
-    }
-    window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    cout << "Creating Texture..." << endl;
-    SDL_Surface* ttex = SDL_LoadBMP("Start_tile.bmp");
-    tex = SDL_CreateTextureFromSurface(renderer, ttex);
-    SDL_FreeSurface(ttex);
+    cout << "Starting game threads" << endl;
+    SDL_CreateThread((SDL_ThreadFunction)&renderloop, "Render", (void*)this);
     cout << "Done!" << endl;
 }
 
-
-SDL_Texture* getTileTex(int type) {
-    return tex;
+int renderloop(void* g) {
+    while (true) {
+        ((Game*)g)->render();
+        SDL_Delay(10);
+    }
+    return 0;
 }
 
 SDL_Rect* createRect(int x, int y, int w, int h) {
@@ -108,20 +108,25 @@ SDL_Rect* createRect(int x, int y, int w, int h) {
 }
 
 void Game::render() {
-    cout << "Render loop!" << endl;
     Level* l = player->getLevel();
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+//    SDL_Point center = {47, 47};
     for (int x = 0; x < l->getWidth(); x++) {
         for (int y = 0; y < l->getHeight(); y++) {
             Tile* t = l->getTile(x, y);
-            SDL_RenderCopy(renderer, getTileTex(t->getType()), NULL, createRect(x * 32, y * 32, 32, 32));
+            SDL_RenderCopy(renderer, texman.getTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
+//            SDL_RenderCopyEx(renderer, texman.getTexture(t->getType()), NULL, createRect(x * 95, y * 95, 95, 95), t->getRot() * 90, &center, SDL_FLIP_NONE);
         }
     }
     SDL_RenderPresent(renderer);
 }
 
 
-void Game::handleEvent(SDL_Event e) {
+void Game::handleEvents() {
+    SDL_Event e;
+    SDL_PollEvent(&e);
+    
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
     if (e.type == SDL_KEYDOWN) {
