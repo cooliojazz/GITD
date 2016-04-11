@@ -70,19 +70,25 @@ void Game::init(int width, int height) {
             currLevel = newLevel;
             posX = 0;
             posY = 0;
-        } else if (firstChar == '(') {
+        } else if (firstChar == '{') {
+            string pair;
             cout << "Reading level line " << posY << endl;
             posX = 0;
             while (posX < levelX) {
+                getline(inputLine, pair, ',');
+                istringstream ipair(pair);
                 int type;
                 int rot;
-                inputLine >> type >> rot;
+                ipair >> type >> rot;
                 if (type < 0 || type > 6 || rot < 0 || rot > 3) {
                     cout << "Error reading tile at " << posX << ", " << posY << "! Exiting!" << endl;
                     done = true;
                 }
                 cout << "Tile " << posX << " is " << type << ", " << rot << endl;
                 currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
+                if (type == START) {
+                     player->setTile(currLevel->getTile(posX, posY));
+                }
                 posX++;
             }
             cout << "Finished level line " << posY << endl;
@@ -103,15 +109,6 @@ int renderloop(void* v) {
     return 0;
 }
 
-SDL_Rect* createRect(int x, int y, int w, int h) {
-    SDL_Rect* rect = new SDL_Rect();
-    rect->x = x;
-    rect->y = y;
-    rect->w = w;
-    rect->h = h;
-    return rect;
-}
-
 void Game::render() {
     Level* l = player->getLevel();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -124,6 +121,7 @@ void Game::render() {
 //            SDL_RenderCopyEx(renderer, texman.getTexture(t->getType()), NULL, createRect(x * 95, y * 95, 95, 95), t->getRot() * 90, &center, SDL_FLIP_NONE);
         }
     }
+    player->render(renderer);
     SDL_RenderPresent(renderer);
 }
 

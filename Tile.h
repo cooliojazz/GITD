@@ -1,7 +1,11 @@
 #ifndef TILE_H
 #define	TILE_H
 
+#include <vector>
 #include "structs.h"
+#include "utils.h"
+
+using namespace std;
 
 class Tile {
     tileT tileType; 
@@ -14,6 +18,8 @@ public:
     Tile (int type, int rotation, int x, int y);
 
     bool moveValid (directionT direction);
+    
+    bool Tile::moveValid(SDL_Rect* p);
 
     int getXLoc();
 

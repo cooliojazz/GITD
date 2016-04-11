@@ -11,6 +11,7 @@
 #include "Level.h"
 #include "Player.h"
 #include "TextureManager.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -40,7 +41,6 @@ public:
     
     bool isRunning();
 };
-
 
 #endif	/* GAME_H */
 
