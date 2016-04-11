@@ -21,7 +21,7 @@ void Game::init(int width, int height) {
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
 
     //read file stuff...
-    ifstream gameFile("GITDTextDoc.txt");
+    ifstream gameFile("C:\\Users\\Ricky\\Documents\\NetBeansProjects\\GITD\\GITDTextDoc.txt");
     cout << "Reading game file..." << endl;
     string line;
     while (getline(gameFile, line)) {
@@ -77,6 +77,10 @@ void Game::init(int width, int height) {
                 int type;
                 int rot;
                 inputLine >> type >> rot;
+                if (type < 0 || type > 6 || rot < 0 || rot > 3) {
+                    cout << "Error reading tile at " << posX << ", " << posY << "! Exiting!" << endl;
+                    done = true;
+                }
                 cout << "Tile " << posX << " is " << type << ", " << rot << endl;
                 currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
                 posX++;
@@ -90,9 +94,10 @@ void Game::init(int width, int height) {
     cout << "Done!" << endl;
 }
 
-int renderloop(void* g) {
-    while (true) {
-        ((Game*)g)->render();
+int renderloop(void* v) {
+    Game* g = ((Game*)v);
+    while (g->isRunning()) {
+        g->render();
         SDL_Delay(10);
     }
     return 0;
@@ -129,6 +134,10 @@ void Game::handleEvents() {
     
     const Uint8* keyState = SDL_GetKeyboardState(NULL);
 
+    if (e.type == SDL_QUIT) {
+        done = true;
+    }
+    
     if (e.type == SDL_KEYDOWN) {
         if ((e.key.keysym.sym == SDLK_w) || (e.key.keysym.sym == SDLK_UP)) {
             if (keyState[SDL_SCANCODE_Q] || keyState[SDL_SCANCODE_Z])
@@ -156,4 +165,9 @@ void Game::handleEvents() {
             player->laserOff();
         }
     }
+    
+}
+
+bool Game::isRunning() {
+    return !done;
 }

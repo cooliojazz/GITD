@@ -1,10 +1,3 @@
-/* 
- * File:   Game.h
- * Author: Ricky
- *
- * Created on March 11, 2016, 2:56 AM
- */
-
 #ifndef GAME_H
 #define	GAME_H
 
@@ -17,7 +10,7 @@
 #include <sstream>
 #include "Level.h"
 #include "Player.h"
-#include "TextureManager.cpp"
+#include "TextureManager.h"
 
 using namespace std;
 
@@ -29,6 +22,7 @@ class Game {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     TextureManager texman;
+    bool done = false;
     //Sound North 
     //Sound East 
     //Sound South 
@@ -43,6 +37,8 @@ public:
     void assignSounds();
 
     void handleEvents();
+    
+    bool isRunning();
 };
 
 

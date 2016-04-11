@@ -1,15 +1,7 @@
-/* 
- * File:   Tile.h
- * Author: Ricky
- *
- * Created on March 11, 2016, 2:46 AM
- */
-
 #ifndef TILE_H
 #define	TILE_H
 
-enum directionT {NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3};
-enum tileT {START = 0, DEADEND = 1, STRAIGHT = 2, BEND = 3, TJUNCT = 4, FOURWAY = 5, EXIT = 6};
+#include "structs.h"
 
 class Tile {
     tileT tileType; 

@@ -1,10 +1,3 @@
-/* 
- * File:   Level.h
- * Author: Ricky
- *
- * Created on March 11, 2016, 2:48 AM
- */
-
 #ifndef LEVEL_H
 #define	LEVEL_H
 

@@ -5,9 +5,10 @@ int main(int argc, char **argv) {
     Game g;
     g.init(640, 480);
     cout << "Finished initializing, beginning event loop" << endl;
-    while (true) {
+    while (g.isRunning()) {
         g.handleEvents();
         SDL_Delay(100);
     }
+    SDL_Quit();
     return 0;
 }

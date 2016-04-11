@@ -1,10 +1,11 @@
-L 3 2
-( 0 0 1 1 1 1
-( 1 0 3 3 6 2
+L 3 3
+( 0 1 1 1 2 1
+( 3 0 5 0 4 3
+( 6 0 4 0 3 3
 T BMP_Tiles/Start_tile 0
 T BMP_Tiles/deadend_tile 1
 T BMP_Tiles/straight_tile 2
 T BMP_Tiles/L_tile 3
-# BMP_Tiles/L_tile 4
-# BMP_Tiles/L_tile 5
+T BMP_Tiles/T_tile 4
+T BMP_Tiles/cross_tile 5
 T BMP_Tiles/end_tile 6

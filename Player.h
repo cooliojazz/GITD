@@ -1,10 +1,3 @@
-/* 
- * File:   Player.h
- * Author: Ricky
- *
- * Created on March 11, 2016, 2:51 AM
- */
-
 #ifndef PLAYER_H
 #define	PLAYER_H
 
