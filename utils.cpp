@@ -21,3 +21,14 @@ bool intersects(SDL_Rect* r1, SDL_Rect* r2) {
             contains(r1, r2->x, r2->y + r2->h);
 }
 
+vector<int> operator+(const vector<int>& v, int a) {
+    vector<int> ret = v;
+    for (unsigned int i = 0; i < ret.size(); i++) ret[i] += a;
+    return ret;
+}
+
+vector<int> operator%(const vector<int>& v, int a) {
+    vector<int> ret = v;
+    for (unsigned int i = 0; i < ret.size(); i++) ret[i] %= a;
+    return ret;
+}

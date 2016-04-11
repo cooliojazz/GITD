@@ -32,20 +32,42 @@ bool Tile::moveValid(SDL_Rect* p) {
     rects.push_back(createRect(67, 0, 29, 29));
     rects.push_back(createRect(67, 67, 29, 29));
     rects.push_back(createRect(0, 67, 29, 29));
+    vector<int> erects;
     switch ((int)getType()) {
         case STRAIGHT:
-            
+            erects.push_back(1);
+            erects.push_back(3);
             break;
-        case FOURWAY:
-            
-        case TJUNCT:
-            
+        case START:
+        case EXIT:
+        case DEADEND:
+            erects.push_back(1);
         case BEND:
-            
-        case START || EXIT || DEADEND:
-            
+            erects.push_back(2);
+        case TJUNCT:
+            erects.push_back(3);
             break;
     }
+    erects = erects + (int)getRot();
+    erects = erects % 4;
+    for (int i : erects) {
+        cout << i << endl;
+        switch (i) {
+            case 0:
+                rects.push_back(createRect(67, 29, 29, 38));
+                break;
+            case 1:
+                rects.push_back(createRect(29, 67, 38, 29));
+                break;
+            case 2:
+                rects.push_back(createRect(0, 29, 29, 38));
+                break;
+            case 3:
+                rects.push_back(createRect(29, 0, 38, 29));
+                break;
+        }
+    }
+    cout << endl;
     for (SDL_Rect* r : rects) if (intersects(r, p)) return false;
     return true;
 }

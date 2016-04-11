@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     cout << "Finished initializing, beginning event loop" << endl;
     while (g.isRunning()) {
         g.handleEvents();
-        SDL_Delay(10);
+        SDL_Delay(1);
     }
     SDL_Quit();
     return 0;

@@ -21,8 +21,8 @@ void Player::move(directionT direction) {
             break;
 //                currentTile = currentLevel->getTile(currentTile->getXLoc() - 1, currentTile->getYLoc());
     }
-        
-    if (currentTile->moveValid(createRect(tx % 96, ty % 96, 32, 32))) {
+    cout << tx % 96 << ", " << ty % 96 << "  " << tx / 96 << ", " << ty / 96 << "  " << tx << ", " << ty << "  " << currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32)) << endl;
+    if (currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32))) {
         x = tx;
         y = ty;
         currentTile = currentLevel->getTile(x / 96, y / 96);

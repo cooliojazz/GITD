@@ -1,6 +1,7 @@
 #ifndef TILE_H
 #define	TILE_H
 
+#include <iostream>
 #include <vector>
 #include "structs.h"
 #include "utils.h"
