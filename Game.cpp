@@ -1,5 +1,5 @@
 #include "Game.h"
-
+// I work on dis now.
 void Game::init(int width, int height) {
     cout << "Initializing game..." << endl;
     
