@@ -112,29 +112,6 @@ void pTexture::free() {
     }
 }
 
-bool pTexture::loadFile(string path) {
-    free();
-
-    SDL_Texture* newTexture = NULL;
-
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == NULL) {
-        cout << "Unable to load image %s! SDL_image Error: %s\n " << endl << path.c_str(), IMG_GetError();
-    } else {
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (newTexture == NULL) {
-            cout << "Unable to create texture from %s!SDL Error : %s\n" << endl << path.c_str(), SDL_GetError();
-        } else {
-            mWidth = loadedSurface->w;
-            mHeight = loadedSurface->h;
-        }
-
-        SDL_FreeSurface(loadedSurface);
-    }
-    mTexture = newTexture;
-    return mTexture != NULL;
-}
-
 void pTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
 
