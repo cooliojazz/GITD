@@ -1,7 +1,5 @@
 #include "Game.h"
 
-SDL_Texture* tex;
-
 void Game::init(int width, int height) {
     cout << "Initializing game..." << endl;
     
@@ -21,7 +19,7 @@ void Game::init(int width, int height) {
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
 
     //read file stuff...
-    ifstream gameFile("C:\\Users\\Ricky\\Documents\\NetBeansProjects\\GITD\\GITDTextDoc.txt");
+    ifstream gameFile("GITDTextDoc.txt");
     cout << "Reading game file..." << endl;
     string line;
     while (getline(gameFile, line)) {

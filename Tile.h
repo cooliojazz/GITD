@@ -20,7 +20,7 @@ public:
 
     bool moveValid (directionT direction);
     
-    bool Tile::moveValid(SDL_Rect* p);
+    bool moveValid(SDL_Rect* p);
 
     int getXLoc();
 
