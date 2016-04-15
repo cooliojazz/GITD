@@ -1,5 +1,5 @@
 #include "Game.h"
-// I work on dis now.
+
 void Game::init(int width, int height) {
     cout << "Initializing game..." << endl;
     
@@ -93,8 +93,25 @@ void Game::init(int width, int height) {
             posY++;
         }
     }
+    cout << "Rendering mask..." << endl;
+    mask = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 96 * 5, 96 * 5);
+    SDL_SetRenderTarget(renderer, mask);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    for (int x = 96; x < 96 * 4; x++) {
+        for (int y = 96; y < 96 * 4; y++) {
+            int c = (int)(255 * (sqrt((x - 240.0) * (x - 240.0) + (y - 240.0) * (y - 240.0)) / 65.0));
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, min(255, c));
+            SDL_RenderDrawPoint(renderer, x, y);
+        }
+    }
+    SDL_SetRenderTarget(renderer, NULL);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(mask, SDL_BLENDMODE_BLEND);
     cout << "Starting game threads" << endl;
     SDL_CreateThread((SDL_ThreadFunction)&renderloop, "Render", (void*)this);
+    SDL_CreateThread((SDL_ThreadFunction)&physloop, "Render", (void*)this);
     cout << "Done!" << endl;
 }
 
@@ -107,22 +124,31 @@ int renderloop(void* v) {
     return 0;
 }
 
+int physloop(void* v) {
+    Game* g = ((Game*)v);
+    while (g->isRunning()) {
+        g->player->physics();
+        SDL_Delay(10);
+    }
+    return 0;
+}
+
 void Game::render() {
     Level* l = player->getLevel();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-//    SDL_Point center = {47, 47};
     for (int x = 0; x < l->getWidth(); x++) {
         for (int y = 0; y < l->getHeight(); y++) {
-            Tile* t = l->getTile(x, y);
-            SDL_RenderCopy(renderer, texman.getTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
-//            SDL_RenderCopyEx(renderer, texman.getTexture(t->getType()), NULL, createRect(x * 95, y * 95, 95, 95), t->getRot() * 90, &center, SDL_FLIP_NONE);
+            if (abs(player->getTile()->getXLoc() - x) + abs(player->getTile()->getYLoc() - y) < 3) {
+                Tile* t = l->getTile(x, y);
+                SDL_RenderCopy(renderer, texman.getTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
+            }
         }
     }
     player->render(renderer);
+    SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 224, player->getY() - 224, 96 * 5, 96 * 5));
     SDL_RenderPresent(renderer);
 }
-
 
 void Game::handleEvents() {
     SDL_Event e;

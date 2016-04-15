@@ -51,7 +51,6 @@ bool Tile::moveValid(SDL_Rect* p) {
     erects = erects + (int)getRot();
     erects = erects % 4;
     for (int i : erects) {
-        cout << i << endl;
         switch (i) {
             case 0:
                 rects.push_back(createRect(67, 29, 29, 38));
@@ -67,7 +66,6 @@ bool Tile::moveValid(SDL_Rect* p) {
                 break;
         }
     }
-    cout << endl;
     for (SDL_Rect* r : rects) if (intersects(r, p)) return false;
     return true;
 }

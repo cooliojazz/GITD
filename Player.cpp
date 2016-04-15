@@ -1,48 +1,65 @@
 #include "Player.h"
 
-const int WALKING_ANIMATION_FRAMES = 4;
-SDL_Rect gSpriteClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkDownClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkUpClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkRightClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkLeftClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect DownIdle[1];
-SDL_Rect UpIdle[1];
-SDL_Renderer* gRenderer = NULL;
+void Player::physics() {
+    double tx = x + vx;
+    vx /= 1.1;
+    if (currentLevel->getTile(((int)tx) / 96, getY() / 96)->moveValid(createRect(((int)tx) % 96, getY() % 96, 32, 32))) {
+        x = tx;
+        currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
+        if (currentTile->getType() == EXIT) {
+            cout << "Level finished!" << endl;
+//            currentLevel = currentLevel->getNextLevel();
+//            currentTile = currentLevel->getStart();
+//            assignSounds();
+        }
+    } else {
+        vx = 0;
+    }
+    double ty = y + vy;
+    vy /= 1.1;
+    if (currentLevel->getTile(getX() / 96, ((int)ty) / 96)->moveValid(createRect(getX() % 96, ((int)ty) % 96, 32, 32))) {
+        y = ty;
+        currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
+        if (currentTile->getType() == EXIT) {
+            cout << "Level finished!" << endl;
+//            currentLevel = currentLevel->getNextLevel();
+//            currentTile = currentLevel->getStart();
+//            assignSounds();
+        }
+    } else {
+        vy = 0;
+    }
+}
 
 void Player::move(directionT direction) {
-    int tx = x;
-    int ty = y;
+//    int tx = x;
+//    int ty = y;
+    facing = direction;
     switch (direction) {				//Note: Doesn't contain any code for playing movement animation
         case NORTH:
-            ty -= 2;
+            vy = -1;
             break;
-//                currentTile = currentLevel->getTile(currentTile->getXLoc(), currentTile->getYLoc() - 1);
         case EAST:
-            tx += 2;
+            vx = 1;
             break;
-//                currentTile = currentLevel->getTile(currentTile->getXLoc() + 1, currentTile->getYLoc());
         case SOUTH:
-            ty += 2;
+            vy = 1;
             break;
-//                currentTile = currentLevel->getTile(currentTile->getXLoc(), currentTile->getYLoc() + 1);
         case WEST:
-            tx -= 2;
+            vx = -1;
             break;
-//                currentTile = currentLevel->getTile(currentTile->getXLoc() - 1, currentTile->getYLoc());
     }
-    cout << tx % 96 << ", " << ty % 96 << "  " << tx / 96 << ", " << ty / 96 << "  " << tx << ", " << ty << "  " << currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32)) << endl;
-    if (currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32))) {
-        x = tx;
-        y = ty;
-        currentTile = currentLevel->getTile(x / 96, y / 96);
-//        if (currentLevel->getEnd() == currentTile) {
-        if (currentTile->getType() == EXIT) {
-            currentLevel = currentLevel->getNextLevel();
-            currentTile = currentLevel->getStart();
-            assignSounds();
-        }
-    }
+//    if (currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32))) {
+//        x = tx;
+//        y = ty;
+//        currentTile = currentLevel->getTile(x / 96, y / 96);
+////        if (currentLevel->getEnd() == currentTile) {
+//        if (currentTile->getType() == EXIT) {
+//            currentLevel = currentLevel->getNextLevel();
+//            currentTile = currentLevel->getStart();
+//            assignSounds();
+//        }
+//    }
 }
 
 void Player::useBell() {
@@ -168,6 +185,18 @@ void Player::assignSounds() {
 }
 
 void Player::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, createRect(x, y, 32, 32));
+    SDL_SetRenderDrawColor(renderer, (Uint8)(255 - facing * 64), (Uint8)(facing * 64), 0, 255);
+    SDL_RenderFillRect(renderer, createRect(getX(), getY(), 32, 32));
+}
+
+Tile* Player::getTile() {
+    return currentTile;
+}
+
+int Player::getX() {
+    return (int)x;
+}
+
+int Player::getY() {
+    return (int)y;
 }

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include "Level.h"
 #include "Player.h"
 #include "TextureManager.h"
@@ -14,13 +15,14 @@
 
 using namespace std;
 
-int renderloop(void* g);
+int renderloop(void* v);
+int physloop(void* v);
 
 class Game {
     int levelCount;
-    Player* player;
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    SDL_Texture* mask = NULL;
     TextureManager texman;
     bool done = false;
     //Sound North 
@@ -29,6 +31,8 @@ class Game {
     //Sound West 
     
 public:
+    
+    Player* player;
     
     void init(int width, int height);
     

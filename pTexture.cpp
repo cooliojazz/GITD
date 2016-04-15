@@ -1,35 +1,25 @@
 #include "pTexture.h"
 
-const int WALKING_ANIMATION_FRAMES = 4;
-SDL_Rect gSpriteClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkDownClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkUpClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkRightClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect WalkLeftClips[WALKING_ANIMATION_FRAMES];
-SDL_Rect DownIdle[1];
-SDL_Rect UpIdle[1];
-SDL_Renderer* gRenderer = NULL;
-
 bool pTexture::loadFile(string path) {
     free();
 
-    SDL_Texture* newTexture = NULL;
-
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == NULL) {
-        cout << "Unable to load image %s! SDL_image Error: %s\n " << endl << path.c_str(), IMG_GetError();
-    } else {
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (newTexture == NULL) {
-            cout << "Unable to create texture from %s!SDL Error : %s\n" << endl << path.c_str(), SDL_GetError();
-        } else {
-            mWidth = loadedSurface->w;
-            mHeight = loadedSurface->h;
-        }
-
-        SDL_FreeSurface(loadedSurface);
-    }
-    mTexture = newTexture;
+//    SDL_Texture* newTexture = NULL;
+//
+//    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+//    if (loadedSurface == NULL) {
+//        cout << "Unable to load image %s! SDL_image Error: %s\n " << endl << path.c_str(), IMG_GetError();
+//    } else {
+//        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+//        if (newTexture == NULL) {
+//            cout << "Unable to create texture from %s!SDL Error : %s\n" << endl << path.c_str(), SDL_GetError();
+//        } else {
+//            mWidth = loadedSurface->w;
+//            mHeight = loadedSurface->h;
+//        }
+//
+//        SDL_FreeSurface(loadedSurface);
+//    }
+//    mTexture = newTexture;
     return mTexture != NULL;
 }
 

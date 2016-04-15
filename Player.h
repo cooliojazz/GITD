@@ -2,6 +2,7 @@
 #define	PLAYER_H
 
 #include <math.h>
+#include <algorithm>
 #include "SDL_mixer.h"
 #include "SDL.h"
 #include "Tile.h"
@@ -11,9 +12,12 @@
 class Player {
     Tile *currentTile; //The tile the player is currently on
     Level *currentLevel; //The level the player is currently on
+    directionT facing;
     bool laser;
-    int x = 32;
-    int y = 32;
+    double vx = 0;
+    double vy = 0;
+    double x = 32;
+    double y = 32;
     
     Mix_Chunk *North;
     Mix_Chunk *West;
@@ -21,6 +25,8 @@ class Player {
     Mix_Chunk *East;
 
 public:
+    
+    void physics();
 
     void move(directionT direction);
 
@@ -47,6 +53,12 @@ public:
     void setWest(Mix_Chunk *newSound);
 
     void render(SDL_Renderer* renderer);
+    
+    Tile* getTile();
+
+    int getX();
+
+    int getY();
 };
 
 #endif	/* PLAYER_H */
