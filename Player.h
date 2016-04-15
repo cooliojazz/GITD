@@ -18,6 +18,8 @@ class Player {
     double vy = 0;
     double x = 32;
     double y = 32;
+    int lx = 32;
+    int ly = 32;
     
     Mix_Chunk *North;
     Mix_Chunk *West;
@@ -32,7 +34,7 @@ public:
 
     void useBell();
 
-    void laserOn(directionT direction);
+    void laserOn();
 
     void laserOff();
 
@@ -59,6 +61,12 @@ public:
     int getX();
 
     int getY();
+    
+    int getLX();
+
+    int getLY();
+    
+    bool getLaser();
 };
 
 #endif	/* PLAYER_H */

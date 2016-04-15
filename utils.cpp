@@ -10,7 +10,7 @@ SDL_Rect* createRect(int x, int y, int w, int h) {
 }
 
 bool contains(SDL_Rect* r, int x, int y) {
-    return x >= r->x && x <= r->x + r->w && y >= r->y && y <= r->y + r->h;
+    return x > r->x && x < r->x + r->w && y > r->y && y < r->y + r->h;
 }
 
 bool intersects(SDL_Rect* r1, SDL_Rect* r2) {
@@ -18,7 +18,11 @@ bool intersects(SDL_Rect* r1, SDL_Rect* r2) {
             contains(r1, r2->x, r2->y) ||
             contains(r1, r2->x + r2->w, r2->y) ||
             contains(r1, r2->x + r2->w, r2->y + r2->h) ||
-            contains(r1, r2->x, r2->y + r2->h);
+            contains(r1, r2->x, r2->y + r2->h) ||
+            contains(r2, r1->x, r1->y) ||
+            contains(r2, r1->x + r1->w, r1->y) ||
+            contains(r2, r1->x + r1->w, r1->y + r1->h) ||
+            contains(r2, r1->x, r1->y + r1->h);
 }
 
 vector<int> operator+(const vector<int>& v, int a) {

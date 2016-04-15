@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Game.h"
 
 void Player::physics() {
     double tx = x + vx;
@@ -29,13 +30,35 @@ void Player::physics() {
     } else {
         vy = 0;
     }
+    
+    //Recompute laser
+    int tlx = 32;
+    int tly = 32;
+    tlx = getX() + 16;
+    tly = getY() + 16;
+    while (tlx >= 0 && tlx <= 96 * getLevel()->getWidth() && tly >= 0 && tly <= 96 * getLevel()->getHeight() && currentLevel->getTile(tlx / 96, tly / 96)->moveValid(createRect(tlx % 96, tly % 96, 1, 1))) {
+        switch (facing) {
+            case NORTH:
+                tly--;
+                break;
+            case EAST:
+                tlx++;
+                break;
+            case SOUTH:
+                tly++;
+                break;
+            case WEST:
+                tlx--;
+                break;
+        }
+    }
+    lx = tlx;
+    ly = tly;
 }
 
 void Player::move(directionT direction) {
-//    int tx = x;
-//    int ty = y;
     facing = direction;
-    switch (direction) {				//Note: Doesn't contain any code for playing movement animation
+    switch (direction) {
         case NORTH:
             vy = -1;
             break;
@@ -49,17 +72,6 @@ void Player::move(directionT direction) {
             vx = -1;
             break;
     }
-//    if (currentLevel->getTile(tx / 96, ty / 96)->moveValid(createRect(tx % 96, ty % 96, 32, 32))) {
-//        x = tx;
-//        y = ty;
-//        currentTile = currentLevel->getTile(x / 96, y / 96);
-////        if (currentLevel->getEnd() == currentTile) {
-//        if (currentTile->getType() == EXIT) {
-//            currentLevel = currentLevel->getNextLevel();
-//            currentTile = currentLevel->getStart();
-//            assignSounds();
-//        }
-//    }
 }
 
 void Player::useBell() {
@@ -95,16 +107,11 @@ void Player::useBell() {
         Mix_PlayChannel(-1, South, 0);
 }
 
-void Player::laserOn(directionT direction) {
-    //Use SDL_SetRenderDrawColor(renderer, 0, 255, 0, ?) to get a green color
-    //Use SDL_RenderDrawLine(renderer, playerX, playerY, destX, destY) to draw a line
-    //Need a direction in the input params
-    //Need to test where there is a wall (? tiles in desired direction, if not, to edge of screen
+void Player::laserOn() {
     laser = true;
 }
 
 void Player::laserOff() {
-    //?????????????????????
     laser = false;
 }
 
@@ -199,4 +206,16 @@ int Player::getX() {
 
 int Player::getY() {
     return (int)y;
+}
+
+int Player::getLX() {
+    return lx;
+}
+
+int Player::getLY() {
+    return ly;
+}
+
+bool Player::getLaser() {
+    return laser;
 }
