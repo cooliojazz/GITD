@@ -37,6 +37,8 @@ void Player::physics() {
     tlx = getX() + 16;
     tly = getY() + 16;
     while (tlx >= 0 && tlx <= 96 * getLevel()->getWidth() && tly >= 0 && tly <= 96 * getLevel()->getHeight() && currentLevel->getTile(tlx / 96, tly / 96)->moveValid(createRect(tlx % 96, tly % 96, 1, 1))) {
+        lx = tlx;
+        ly = tly;
         switch (facing) {
             case NORTH:
                 tly--;
@@ -52,8 +54,6 @@ void Player::physics() {
                 break;
         }
     }
-    lx = tlx;
-    ly = tly;
 }
 
 void Player::move(directionT direction) {
