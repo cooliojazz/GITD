@@ -8,6 +8,7 @@
 #include "Tile.h"
 #include "Level.h"
 #include "utils.h"
+#include "TextureManager.h"
 
 class Player {
     Tile *currentTile; //The tile the player is currently on
@@ -20,6 +21,7 @@ class Player {
     double y = 32;
     int lx = 32;
     int ly = 32;
+    double anim = 0;
     
     Mix_Chunk *North;
     Mix_Chunk *West;
@@ -54,7 +56,7 @@ public:
 
     void setWest(Mix_Chunk *newSound);
 
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, TextureManager texman);
     
     Tile* getTile();
 
@@ -67,6 +69,8 @@ public:
     int getLY();
     
     bool getLaser();
+    
+    directionT getFacing();
 };
 
 #endif	/* PLAYER_H */

@@ -31,6 +31,14 @@ void Player::physics() {
         vy = 0;
     }
     
+    //Do animation
+    if (sqrt(vx * vx + vy * vy) > 0.1) {
+        anim += 0.1;
+        if (anim >= 4) anim = 1;
+    } else {
+        anim = 0;
+    }
+    
     //Recompute laser
     int tlx = 32;
     int tly = 32;
@@ -60,16 +68,20 @@ void Player::move(directionT direction) {
     facing = direction;
     switch (direction) {
         case NORTH:
-            vy = -1;
+            vy -= 0.01;
+            if (vy < -1) vy = -1;
             break;
         case EAST:
-            vx = 1;
+            vx += 0.01;
+            if (vx > 1) vx = 1;
             break;
         case SOUTH:
-            vy = 1;
+            vy += 0.01;
+            if (vy > 1) vy = 1;
             break;
         case WEST:
-            vx = -1;
+            vx -= 0.01;
+            if (vx < -1) vx = -1;
             break;
     }
 }
@@ -124,6 +136,8 @@ void Player::setLevel(Level *inLevel) {
 }
 
 void Player::setTile(Tile *inTile) {
+    x = 32 + inTile->getXLoc() * 96;
+    y = 32 + inTile->getYLoc() * 96;
     currentTile = inTile;
 }
 
@@ -191,9 +205,9 @@ void Player::assignSounds() {
     }
 }
 
-void Player::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, (Uint8)(255 - facing * 64), (Uint8)(facing * 64), 0, 255);
-    SDL_RenderFillRect(renderer, createRect(getX(), getY(), 32, 32));
+void Player::render(SDL_Renderer* renderer, TextureManager texman) {
+    SDL_RenderCopy(renderer, texman.getPlayTexture(getFacing(), (int)anim), NULL, createRect(getX(), getY(), 32, 32));
+//    SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
 }
 
 Tile* Player::getTile() {
@@ -218,4 +232,8 @@ int Player::getLY() {
 
 bool Player::getLaser() {
     return laser;
+}
+
+directionT Player::getFacing() {
+    return facing;
 }

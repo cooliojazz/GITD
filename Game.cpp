@@ -10,6 +10,7 @@ void Game::init(int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw new runtime_error("Cannot Initialize SDL.");
     }
+    IMG_Init(IMG_INIT_PNG);
     window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     cout << "SDL Initialized." << endl;
@@ -38,7 +39,12 @@ void Game::init(int width, int height) {
             int type;
             inputLine >> path >> type;
             cout << "Adding texture from " << path << " as " << type << endl;
-            texman.loadTexture(renderer, path, (tileT)type);
+            texman.loadTileTexture(renderer, path, (tileT)type);
+        } else if (firstChar == 'P') {
+            string path;
+            inputLine >> path;
+            cout << "Adding player texture from " << path << endl;
+            texman.loadPlayTexture(renderer, path);
         } else if (firstChar == 'S') {
             char filename[256];
             //First Sound is North
@@ -94,14 +100,14 @@ void Game::init(int width, int height) {
         }
     }
     cout << "Rendering mask..." << endl;
-    mask = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 96 * 5, 96 * 5);
+    mask = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 96 * 7, 96 * 7);
     SDL_SetRenderTarget(renderer, mask);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    for (int x = 96; x < 96 * 4; x++) {
-        for (int y = 96; y < 96 * 4; y++) {
-            int c = (int)(255 * (sqrt((x - 240.0) * (x - 240.0) + (y - 240.0) * (y - 240.0)) / 65.0));
+    for (int x = 96 * 2; x < 96 * 5; x++) {
+        for (int y = 96 * 2; y < 96 * 5; y++) {
+            int c = (int)(255 * (sqrt((x - 336.0) * (x - 336.0) + (y - 336.0) * (y - 336.0)) / 65.0));
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, min(255, c));
             SDL_RenderDrawPoint(renderer, x, y);
         }
@@ -141,12 +147,12 @@ void Game::render() {
         for (int y = 0; y < l->getHeight(); y++) {
             if (abs(player->getTile()->getXLoc() - x) + abs(player->getTile()->getYLoc() - y) < 3) {
                 Tile* t = l->getTile(x, y);
-                SDL_RenderCopy(renderer, texman.getTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
+                SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
             }
         }
     }
-    player->render(renderer);
-    SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 224, player->getY() - 224, 96 * 5, 96 * 5));
+    player->render(renderer, texman);
+    SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 320, player->getY() - 320, 96 * 7, 96 * 7));
     if (player->getLaser()) {
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
         SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
