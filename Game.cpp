@@ -231,7 +231,7 @@ void Game::handleEvents() {
 //                player->move(WEST);
 //        } else if ((e.key.keysym.sym == SDLK_e) || (e.key.keysym.sym == SDLK_x)) {
 //            player->useBell();
-//				Mix_PauseMusic() ---------------------------------------------------------------------------Should Pause Music on "Q" Key Press
+//				Mix_PauseMusic(gMusic) ---------------------------------------------------------------------------Should Pause Music on "Q" Key Press
 //			}
 //        } else if ((e.key.keysym.sym == SDLK_q) || (e.key.keysym.sym == SDLK_z)) {
 //            player->laserOff();
