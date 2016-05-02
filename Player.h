@@ -29,6 +29,8 @@ class Player {
     Mix_Chunk *East;
 
 public:
+
+	double battery = 100;
     
     void physics();
 

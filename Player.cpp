@@ -40,6 +40,15 @@ void Player::physics() {
     }
     
     //Recompute laser
+	if (laser)
+	{
+		battery -= .4;
+		if (battery <= 0)
+		{
+			battery = 0;
+			laserOff();
+		}
+	}
     int tlx = 32;
     int tly = 32;
     tlx = getX() + 16;

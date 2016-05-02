@@ -14,6 +14,12 @@ void Game::init(int width, int height) {
     window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     cout << "SDL Initialized." << endl;
+	if (TTF_Init() < 0) cout << "Nope" << endl;
+	font = TTF_OpenFont("ufonts.com_16bit.ttf", 12);
+	if (font == NULL)
+	{
+		printf("Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError());
+	}
     
     player = new Player();
     Level* currLevel = NULL;
@@ -139,6 +145,33 @@ int physloop(void* v) {
     return 0;
 }
 
+SDL_Texture * Game::loadFromRenderedText(string textureText, SDL_Color textColor) //ALL OF THIS IS NEW CODE FOR THIS FUNCTION Put this as new function in game.cpp
+{
+
+	//Render text surface
+	SDL_Texture* mtexture = NULL;
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
+	if (textSurface == NULL)
+	{
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+	else
+	{
+		//Create texture from surface pixels
+		mtexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		if (mtexture == NULL)
+		{
+			cout << "HEY" << endl;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface(textSurface);
+	}
+
+	//Return success
+	return mtexture;
+}
+
 void Game::render() {
     Level* l = player->getLevel();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -157,6 +190,12 @@ void Game::render() {
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
         SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
     }
+
+	SDL_Color textColor = { 255, 255, 255 };
+	SDL_Texture *text;
+	string batt = to_string((int)player->battery);
+	text = loadFromRenderedText("Battery: " + batt, textColor);
+	SDL_RenderCopy(renderer, text, NULL, createRect(0,0,100,25));
     SDL_RenderPresent(renderer);
 }
 
@@ -182,7 +221,7 @@ void Game::handleEvents() {
     if (keyState[SDL_SCANCODE_D]) {
         player->move(EAST);
     }
-    if (keyState[SDL_SCANCODE_TAB]) {
+    if (keyState[SDL_SCANCODE_TAB] && player->battery >0 ) {
         player->laserOn();
     } else {
         player->laserOff();

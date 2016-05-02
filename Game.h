@@ -11,6 +11,7 @@
 #include "Level.h"
 #include "Player.h"
 #include "TextureManager.h"
+#include "SDL_ttf.h"
 #include "utils.h"
 
 using namespace std;
@@ -23,6 +24,7 @@ class Game {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     SDL_Texture* mask = NULL;
+	TTF_Font* font = NULL;
     TextureManager texman;
     bool done = false;
     //Sound North 
@@ -41,6 +43,8 @@ public:
     void assignSounds();
 
     void handleEvents();
+
+	SDL_Texture * loadFromRenderedText(string textureText, SDL_Color textColor);
     
     bool isRunning();
 };
