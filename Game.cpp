@@ -14,7 +14,7 @@ void Game::init(int width, int height) {
     window = SDL_CreateWindow("GITD", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     cout << "SDL Initialized." << endl;
-    
+
     player = new Player();
     Level* currLevel = NULL;
     int posX = 0, posY = 0, levelX = 0, levelY = 0;
@@ -117,7 +117,8 @@ void Game::init(int width, int height) {
     SDL_SetTextureBlendMode(mask, SDL_BLENDMODE_BLEND);
     cout << "Starting game threads" << endl;
     SDL_CreateThread((SDL_ThreadFunction)&renderloop, "Render", (void*)this);
-    SDL_CreateThread((SDL_ThreadFunction)&physloop, "Render", (void*)this);
+    SDL_CreateThread((SDL_ThreadFunction)&physloop, "Physics", (void*)this);
+	SDL_CreateThread((SDL_ThreadFunction)&soundtrkloop, "Soundtrack", (void*)this);
     cout << "Done!" << endl;
 }
 
@@ -137,6 +138,26 @@ int physloop(void* v) {
         SDL_Delay(10);
     }
     return 0;
+}
+
+
+
+int soundtrkloop(void* v) {
+	Game* g = ((Game*)v);
+	//The Background music.
+	Mix_Music *gMusic = NULL;
+	//Load music
+	gMusic = Mix_LoadMUS("cave.wav");
+
+	if (gMusic == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+	}
+	/*while (g->isRunning()) {
+		Mix_PlayMusic(gMusic,);
+	}*/
+	Mix_PlayMusic(gMusic,1000);
+	return 0;
 }
 
 void Game::render() {

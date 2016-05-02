@@ -1,3 +1,4 @@
+
 #include "TextureManager.h"
 
 void TextureManager::loadTileTexture(SDL_Renderer* renderer, string file, tileT type) {
