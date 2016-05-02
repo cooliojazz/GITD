@@ -18,6 +18,7 @@ using namespace std;
 
 int renderloop(void* v);
 int physloop(void* v);
+int soundtrkloop(void* v);
 
 class Game {
     int levelCount;
