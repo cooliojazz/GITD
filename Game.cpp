@@ -200,28 +200,39 @@ SDL_Texture * Game::loadFromRenderedText(string textureText, SDL_Color textColor
 
 void Game::render() {
 	Level* l = player->getLevel();
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	for (int x = 0; x < l->getWidth(); x++) {
-		for (int y = 0; y < l->getHeight(); y++) {
-			if (abs(player->getTile()->getXLoc() - x) + abs(player->getTile()->getYLoc() - y) < 3) {
-				Tile* t = l->getTile(x, y);
-				SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
+	if (l != NULL) {
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+		for (int x = 0; x < l->getWidth(); x++) {
+			for (int y = 0; y < l->getHeight(); y++) {
+				if (abs(player->getTile()->getXLoc() - x) + abs(player->getTile()->getYLoc() - y) < 3) {
+					Tile* t = l->getTile(x, y);
+					SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
+				}
 			}
 		}
-	}
-	player->render(renderer, texman);
-	SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 320, player->getY() - 320, 96 * 7, 96 * 7));
-	if (player->getLaser()) {
-		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-		SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
+		player->render(renderer, texman);
+		SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 320, player->getY() - 320, 96 * 7, 96 * 7));
+		if (player->getLaser()) {
+			SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+			SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
+		}
+
+		SDL_Color textColor = { 255, 255, 255 };
+		SDL_Texture *text;
+		string batt = to_string((int)player->battery);
+		text = loadFromRenderedText("Battery: " + batt, textColor);
+		SDL_RenderCopy(renderer, text, NULL, createRect(0, 0, 100, 25));
 	}
 
-	SDL_Color textColor = { 255, 255, 255 };
-	SDL_Texture *text;
-	string batt = to_string((int)player->battery);
-	text = loadFromRenderedText("Battery: " + batt, textColor);
-	SDL_RenderCopy(renderer, text, NULL, createRect(0, 0, 100, 25));
+	else if (l=NULL){
+		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+		SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
+		SDL_Color textColor = { 255, 255, 255 };
+		SDL_Texture *text;
+		text = loadFromRenderedText("You Surived The Maze.... This Time.", textColor);
+	}
+
 	SDL_RenderPresent(renderer);
 }
 
