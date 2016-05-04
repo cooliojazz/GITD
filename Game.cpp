@@ -103,7 +103,7 @@ void Game::init(int width, int height) {
 				cout << "Tile " << posX << " is " << type << ", " << rot << endl;
 				currLevel->setTile(posX, posY, new Tile(type, rot, posX, posY));
 				if (type == START) {
-					player->setTile(currLevel->getTile(posX, posY));
+					currLevel->setStart(currLevel->getTile(posX, posY));
 				}
 				posX++;
 			}
@@ -111,6 +111,7 @@ void Game::init(int width, int height) {
 			posY++;
 		}
 	}
+	player->setTile(player->getLevel()->getStart());
 	cout << "Rendering mask..." << endl;
 	mask = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 96 * 7, 96 * 7);
 	SDL_SetRenderTarget(renderer, mask);

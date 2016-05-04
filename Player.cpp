@@ -9,9 +9,12 @@ void Player::physics() {
 		currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
 		if (currentTile->getType() == EXIT) {
 			cout << "Level finished!" << endl;
-			//            currentLevel = currentLevel->getNextLevel();
-			//            currentTile = currentLevel->getStart();
-			//            assignSounds();
+			            currentLevel = currentLevel->getNextLevel();
+			            currentTile = currentLevel->getStart();
+						x = currentTile->getXLoc() * 96 + 32;
+						y = currentTile->getYLoc() * 96 + 32;
+			            assignSounds();
+						
 		}
 	}
 	else {
@@ -24,9 +27,12 @@ void Player::physics() {
 		currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
 		if (currentTile->getType() == EXIT) {
 			cout << "Level finished!" << endl;
-			//            currentLevel = currentLevel->getNextLevel();
-			//            currentTile = currentLevel->getStart();
-			//            assignSounds();
+			            currentLevel = currentLevel->getNextLevel();
+			            currentTile = currentLevel->getStart();
+						x = currentTile->getXLoc() * 96 + 32;
+						y = currentTile->getYLoc() * 96 + 32;
+			            assignSounds();
+
 		}
 	}
 	else {
