@@ -1,3 +1,4 @@
+
 #include "TextureManager.h"
 
 void TextureManager::loadTileTexture(SDL_Renderer* renderer, string file, tileT type) {
@@ -43,7 +44,8 @@ void TextureManager::loadPlayTexture(SDL_Renderer* renderer, string file) {
     cout << "Loading player texture file for " << file << "..." << endl;
     SDL_Surface* stex = IMG_Load(file.c_str());
     if (stex == NULL) {
-        cout << "Error reading texture!" << endl;
+		
+        cout << "Error reading texture! " << IMG_GetError() << endl;
     } else {
         SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, stex);
         SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);

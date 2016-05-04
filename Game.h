@@ -11,38 +11,43 @@
 #include "Level.h"
 #include "Player.h"
 #include "TextureManager.h"
+#include "SDL_ttf.h"
 #include "utils.h"
 
 using namespace std;
 
 int renderloop(void* v);
 int physloop(void* v);
+int soundtrkloop(void* v);
 
 class Game {
-    int levelCount;
-    SDL_Window* window = NULL;
-    SDL_Renderer* renderer = NULL;
-    SDL_Texture* mask = NULL;
-    TextureManager texman;
-    bool done = false;
-    //Sound North 
-    //Sound East 
-    //Sound South 
-    //Sound West 
-    
+	int levelCount;
+	SDL_Window* window = NULL;
+	SDL_Renderer* renderer = NULL;
+	SDL_Texture* mask = NULL;
+	TTF_Font* font = NULL;
+	TextureManager texman;
+	bool done = false;
+	//Sound North 
+	//Sound East 
+	//Sound South 
+	//Sound West 
+
 public:
-    
-    Player* player;
-    
-    void init(int width, int height);
-    
-    void render();
 
-    void assignSounds();
+	Player* player;
 
-    void handleEvents();
-    
-    bool isRunning();
+	void init(int width, int height);
+
+	void render();
+
+	void assignSounds();
+
+	void handleEvents();
+
+	SDL_Texture * loadFromRenderedText(string textureText, SDL_Color textColor);
+
+	bool isRunning();
 };
 
 #endif	/* GAME_H */
