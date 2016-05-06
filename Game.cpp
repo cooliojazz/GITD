@@ -60,19 +60,6 @@ void Game::init(int width, int height) {
             player->setSouth(Mix_LoadWAV(files[2]));
             //Fourth - West
             player->setWest(Mix_LoadWAV(files[3]));
-//            char filename[256];
-//            //First Sound is North
-//            inputLine.get(filename, 64, ' '); //Problems with excess space?
-//            player->setNorth(Mix_LoadWAV(filename));
-//            //Second - East
-//            inputLine.get(filename, 64, ' ');
-//            player->setEast(Mix_LoadWAV(filename));
-//            //Third - South
-//            inputLine.get(filename, 64, ' ');
-//            player->setSouth(Mix_LoadWAV(filename));
-//            //Fourth - West
-//            inputLine.get(filename, 64, ' ');
-//            player->setWest(Mix_LoadWAV(filename));
         } else if (firstChar == 'L') {//create new level when level header (length, height) is read
             //LevelX = first read, levelY = second read
             inputLine >> levelX >> levelY;
@@ -108,7 +95,7 @@ void Game::init(int width, int height) {
                     currLevel->setEnd(currLevel->getTile(posX, posY));
                 }
                 if (type == START) {
-                    player->setTile(currLevel->getTile(posX, posY));
+                    currLevel->setStart(currLevel->getTile(posX, posY));
                 }
                 posX++;
             }
@@ -116,6 +103,7 @@ void Game::init(int width, int height) {
             posY++;
         }
     }
+    player->setTile(player->getLevel()->getStart());
     cout << "Rendering mask..." << endl;
     mask = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 96 * 7, 96 * 7);
     SDL_SetRenderTarget(renderer, mask);
@@ -133,9 +121,9 @@ void Game::init(int width, int height) {
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetTextureBlendMode(mask, SDL_BLENDMODE_BLEND);
     cout << "Starting game threads" << endl;
-    SDL_CreateThread((SDL_ThreadFunction) & renderloop, "Render", (void*)this);
-    SDL_CreateThread((SDL_ThreadFunction) & physloop, "Physics", (void*)this);
-    SDL_CreateThread((SDL_ThreadFunction) & soundtrkloop, "Soundtrack", (void*)this);
+    SDL_CreateThread((SDL_ThreadFunction)&renderloop, "Render", (void*) this);
+    SDL_CreateThread((SDL_ThreadFunction)&physloop, "Physics", (void*) this);
+    SDL_CreateThread((SDL_ThreadFunction)&soundtrkloop, "Soundtrack", (void*) this);
     cout << "Done!" << endl;
 }
 
@@ -165,7 +153,8 @@ int soundtrkloop(void* v) {
     //The Background music.
     Mix_Music *gMusic = NULL;
     //Load music
-    gMusic = Mix_LoadMUS("sounds/cave.wav");
+    Mix_VolumeMusic(50);
+    gMusic = Mix_LoadMUS("sounds/cave.ogg");
 
     if (gMusic == NULL) {
         cout << "Failed to load beat music! SDL_mixer Error:" << Mix_GetError() << endl;
@@ -199,20 +188,18 @@ SDL_Texture * Game::loadFromRenderedText(string textureText, SDL_Color textColor
         if (mtexture == NULL) {
             cout << "HEY" << endl;
         }
-
         //Get rid of old surface
         SDL_FreeSurface(textSurface);
     }
-
     //Return success
     return mtexture;
 }
 
 void Game::render() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
     Level* l = player->getLevel();
     if (l != NULL) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
         for (int x = 0; x < l->getWidth(); x++) {
             for (int y = 0; y < l->getHeight(); y++) {
                 if (abs(player->getTile()->getXLoc() - x) + abs(player->getTile()->getYLoc() - y) < 3) {
@@ -230,15 +217,14 @@ void Game::render() {
 
         SDL_Color textColor = {255, 255, 255};
         SDL_Texture *text;
-        string batt = to_string((int)player->battery);
-        text = loadFromRenderedText("Battery: " + batt, textColor);
-        SDL_RenderCopy(renderer, text, NULL, createRect(0, 0, 100, 25));
-    } else if (l = NULL) {
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
+        string batt = to_string((int) player->battery);
+        text = loadFromRenderedText("Battery: " + batt + "%", textColor);
+        SDL_RenderCopy(renderer, text, NULL, createRect(0, 0, 150, 20));
+    } else if (l == NULL) {
         SDL_Color textColor = {255, 255, 255};
         SDL_Texture *text;
-        text = loadFromRenderedText("You Surived The Maze.... This Time.", textColor);
+        text = loadFromRenderedText("You Survived The Maze.... This Time.", textColor);
+        SDL_RenderCopy(renderer, text, NULL, createRect(75, 200, 500, 50));
     }
 
     SDL_RenderPresent(renderer);
@@ -253,27 +239,28 @@ void Game::handleEvents() {
     if (e.type == SDL_QUIT) {
         done = true;
     }
-
-    if (keyState[SDL_SCANCODE_W]) {
-        player->move(NORTH);
-    }
-    if (keyState[SDL_SCANCODE_A]) {
-        player->move(WEST);
-    }
-    if (keyState[SDL_SCANCODE_S]) {
-        player->move(SOUTH);
-    }
-    if (keyState[SDL_SCANCODE_D]) {
-        player->move(EAST);
-    }
-    if (keyState[SDL_SCANCODE_TAB] && player->battery > 0) {
-        player->laserOn();
-    } else {
-        player->laserOff();
-    }
-    if (keyState[SDL_SCANCODE_Q]) {
-        musicpause = true;
-        player->useBell();
+    if (player->getLevel() != NULL) {
+        if (keyState[SDL_SCANCODE_W]) {
+            player->move(NORTH);
+        }
+        if (keyState[SDL_SCANCODE_A]) {
+            player->move(WEST);
+        }
+        if (keyState[SDL_SCANCODE_S]) {
+            player->move(SOUTH);
+        }
+        if (keyState[SDL_SCANCODE_D]) {
+            player->move(EAST);
+        }
+        if (keyState[SDL_SCANCODE_TAB] && player->battery > 0) {
+            player->laserOn();
+        } else {
+            player->laserOff();
+        }
+        if (keyState[SDL_SCANCODE_Q]) {
+            musicpause = true;
+            player->useBell();
+        }
     }
 
 }

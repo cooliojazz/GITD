@@ -2,73 +2,91 @@
 #include "Game.h"
 
 void Player::physics(double ticks) {
-    double tx = x + vx * ticks;
-    vx /= 1.1;
-    if (currentLevel->getTile(((int)tx) / 96, getY() / 96)->moveValid(createRect(((int)tx) % 96, getY() % 96, 32, 32))) {
-        x = tx;
-        currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
-        if (currentTile->getType() == EXIT) {
-            cout << "Level finished!" << endl;
-            //            currentLevel = currentLevel->getNextLevel();
-            //            currentTile = currentLevel->getStart();
-            //            assignSounds();
-        }
-    } else {
-        vx = 0;
-    }
-    double ty = y + vy * ticks;
-    vy /= 1.1;
-    if (currentLevel->getTile(getX() / 96, ((int)ty) / 96)->moveValid(createRect(getX() % 96, ((int)ty) % 96, 32, 32))) {
-        y = ty;
-        currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
-        if (currentTile->getType() == EXIT) {
-            cout << "Level finished!" << endl;
-            //            currentLevel = currentLevel->getNextLevel();
-            //            currentTile = currentLevel->getStart();
-            //            assignSounds();
-        }
-    } else {
-        vy = 0;
-    }
+    if (currentLevel != NULL) {
+        double tx = x + vx * ticks;
+        vx /= 1.1;
+        if (currentLevel->getTile(((int)tx) / 96, getY() / 96)->moveValid(createRect(((int)tx) % 96, getY() % 96, 32, 32))) {
+            x = tx;
+            currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
+            if (currentTile->getType() == EXIT) {
+                cout << "Level finished!" << endl;
+                currentLevel = currentLevel->getNextLevel();
+                if (currentLevel != NULL) {
+                    currentTile = currentLevel->getStart();
+                    x = currentTile->getXLoc() * 96 + 32;
+                    y = currentTile->getYLoc() * 96 + 32;
+                    assignSounds();
+                    battery = 100;
+                } else {
+                    return;
+                }
 
-    //Do animation
-    if (sqrt(vx * vx + vy * vy) > 0.1) {
-        anim += 0.1 * ticks;
-        if (anim >= 4) anim = 1;
-    } else {
-        anim = 0;
-    }
+            }
+        } else {
+            vx = 0;
+        }
+        double ty = y + vy * ticks;
+        vy /= 1.1;
+        if (currentLevel->getTile(getX() / 96, ((int)ty) / 96)->moveValid(createRect(getX() % 96, ((int)ty) % 96, 32, 32))) {
+            y = ty;
+            currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
+            if (currentTile->getType() == EXIT) {
+                cout << "Level finished!" << endl;
+                currentLevel = currentLevel->getNextLevel();
+                if (currentLevel != NULL) {
+                    currentTile = currentLevel->getStart();
+                    x = currentTile->getXLoc() * 96 + 32;
+                    y = currentTile->getYLoc() * 96 + 32;
+                    assignSounds();
+                    battery = 100;
+                } else {
+                    return;
+                }
 
-    //Recompute laser
-    if (laser) {
-        battery -= .4;
-        if (battery <= 0) {
-            battery = 0;
-            laserOff();
+            }
+        } else {
+            vy = 0;
         }
-    }
-    int tlx = 32;
-    int tly = 32;
-    tlx = getX() + 16;
-    tly = getY() + 16;
-    while (tlx >= 0 && tlx <= 96 * getLevel()->getWidth() && tly >= 0 && tly <= 96 * getLevel()->getHeight() && currentLevel->getTile(tlx / 96, tly / 96)->moveValid(createRect(tlx % 96, tly % 96, 1, 1))) {
-        switch (facing) {
-            case NORTH:
-                tly--;
-                break;
-            case EAST:
-                tlx++;
-                break;
-            case SOUTH:
-                tly++;
-                break;
-            case WEST:
-                tlx--;
-                break;
+
+        //Do animation
+        if (sqrt(vx * vx + vy * vy) > 0.1) {
+            anim += 0.1 * ticks;
+            if (anim >= 4) anim = 1;
+        } else {
+            anim = 0;
         }
+
+        //Recompute laser
+        if (laser) {
+            battery -= .1 * ticks;
+            if (battery <= 0) {
+                battery = 0;
+                laserOff();
+            }
+        }
+        int tlx = 32;
+        int tly = 32;
+        tlx = getX() + 16;
+        tly = getY() + 16;
+        while (tlx >= 0 && tlx <= 96 * getLevel()->getWidth() && tly >= 0 && tly <= 96 * getLevel()->getHeight() && currentLevel->getTile(tlx / 96, tly / 96)->moveValid(createRect(tlx % 96, tly % 96, 1, 1))) {
+            switch (facing) {
+                case NORTH:
+                    tly--;
+                    break;
+                case EAST:
+                    tlx++;
+                    break;
+                case SOUTH:
+                    tly++;
+                    break;
+                case WEST:
+                    tlx--;
+                    break;
+            }
+        }
+        lx = tlx;
+        ly = tly;
     }
-    lx = tlx;
-    ly = tly;
 }
 
 void Player::move(directionT direction) {
@@ -99,7 +117,7 @@ void Player::useBell() {
 
     double distance = sqrt(xDiff * xDiff + yDiff * yDiff); //The straight distance between the player's tile and the end
 
-    int volLevel = (int)((currentLevel->getWidth() + 1 - distance) / 10.0 * 128.0);
+    int volLevel = (int)((currentLevel->getWidth() + 1 - distance) / 10.0 * 110.0);
     Mix_Volume(-1, volLevel);
 
     int ch;

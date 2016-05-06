@@ -30,7 +30,7 @@ class Player {
 
 public:
 
-	double battery = 100;
+    double battery = 100;
     
     void physics(double ticks);
 
