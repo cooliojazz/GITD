@@ -1,10 +1,10 @@
 #include "Player.h"
 #include "Game.h"
 
-void Player::physics() {
-    double tx = x + vx;
+void Player::physics(double ticks) {
+    double tx = x + vx * ticks;
     vx /= 1.1;
-    if (currentLevel->getTile(((int) tx) / 96, getY() / 96)->moveValid(createRect(((int) tx) % 96, getY() % 96, 32, 32))) {
+    if (currentLevel->getTile(((int)tx) / 96, getY() / 96)->moveValid(createRect(((int)tx) % 96, getY() % 96, 32, 32))) {
         x = tx;
         currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
         if (currentTile->getType() == EXIT) {
@@ -16,9 +16,9 @@ void Player::physics() {
     } else {
         vx = 0;
     }
-    double ty = y + vy;
+    double ty = y + vy * ticks;
     vy /= 1.1;
-    if (currentLevel->getTile(getX() / 96, ((int) ty) / 96)->moveValid(createRect(getX() % 96, ((int) ty) % 96, 32, 32))) {
+    if (currentLevel->getTile(getX() / 96, ((int)ty) / 96)->moveValid(createRect(getX() % 96, ((int)ty) % 96, 32, 32))) {
         y = ty;
         currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
         if (currentTile->getType() == EXIT) {
@@ -33,7 +33,7 @@ void Player::physics() {
 
     //Do animation
     if (sqrt(vx * vx + vy * vy) > 0.1) {
-        anim += 0.1;
+        anim += 0.1 * ticks;
         if (anim >= 4) anim = 1;
     } else {
         anim = 0;
@@ -94,36 +94,28 @@ void Player::move(directionT direction) {
 }
 
 void Player::useBell() {
-    int xDiff = currentTile->getXLoc() - currentLevel->getEnd()->getXLoc(); //The X-difference between the players current tile and the level's end tile
-    int yDiff = currentTile->getYLoc() - currentLevel->getEnd()->getYLoc(); //The Y-difference between the players current tile and the level's end tile
+    double xDiff = x / 96.0 - currentLevel->getEnd()->getXLoc() - 48 / 96.0; //The X-difference between the players current tile and the level's end tile
+    double yDiff = y / 96.0 - currentLevel->getEnd()->getYLoc() - 48 / 96.0; //The Y-difference between the players current tile and the level's end tile
 
-    int distance = (int) sqrt(xDiff ^ 2 + yDiff ^ 2); //The straight distance between the player's tile and the end
+    double distance = sqrt(xDiff * xDiff + yDiff * yDiff); //The straight distance between the player's tile and the end
 
-    int volLevel;
-
-    if (distance < 2) {
-        volLevel = 100;
-    } else if (distance < 4) {
-        volLevel = 75;
-    } else {
-        volLevel = 50;
-    }
-
+    int volLevel = (int)((currentLevel->getWidth() + 1 - distance) / 10.0 * 128.0);
     Mix_Volume(-1, volLevel);
 
+    int ch;
     if (xDiff > 0)
         //Play sound for West (send in distance as param for volume/loudness)
-        Mix_PlayChannel(-1, West, 0);
+        ch = Mix_PlayChannel(-1, West, 0);
     else if (xDiff < 0)
         //Play sound for East (send in distance as param for volume/loudness)
-        Mix_PlayChannel(-1, East, 0);
+        ch = Mix_PlayChannel(-1, East, 0);
 
     if (yDiff > 0)
         //Play sound for North (send in distance as param for volume/loudness)
-        Mix_PlayChannel(-1, North, 0);
+        ch = Mix_PlayChannel(-1, North, 0);
     else if (yDiff < 0)
         //Play sound for South (send in distance as param for volume/loudness)
-        Mix_PlayChannel(-1, South, 0);
+        ch = Mix_PlayChannel(-1, South, 0);
 }
 
 void Player::laserOn() {
@@ -213,7 +205,7 @@ void Player::assignSounds() {
 }
 
 void Player::render(SDL_Renderer* renderer, TextureManager texman) {
-    SDL_RenderCopy(renderer, texman.getPlayTexture(getFacing(), (int) anim), NULL, createRect(getX(), getY(), 32, 32));
+    SDL_RenderCopy(renderer, texman.getPlayTexture(getFacing(), (int)anim), NULL, createRect(getX(), getY(), 32, 32));
     //    SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
 }
 
@@ -222,11 +214,11 @@ Tile* Player::getTile() {
 }
 
 int Player::getX() {
-    return (int) x;
+    return (int)x;
 }
 
 int Player::getY() {
-    return (int) y;
+    return (int)y;
 }
 
 int Player::getLX() {

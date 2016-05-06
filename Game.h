@@ -28,14 +28,11 @@ class Game {
 	TTF_Font* font = NULL;
 	TextureManager texman;
 	bool done = false;
-	//Sound North 
-	//Sound East 
-	//Sound South 
-	//Sound West 
 
 public:
 
 	Player* player;
+        bool musicpause = false;
 
 	void init(int width, int height);
 

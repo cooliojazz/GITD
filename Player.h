@@ -32,7 +32,7 @@ public:
 
 	double battery = 100;
     
-    void physics();
+    void physics(double ticks);
 
     void move(directionT direction);
 
