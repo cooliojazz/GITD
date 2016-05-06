@@ -36,6 +36,7 @@ class Game {
 public:
 
 	Player* player;
+        bool musicpause = false;
 
 	void init(int width, int height);
 

@@ -15,3 +15,4 @@ T BMP_Tiles/T_tile 4
 T BMP_Tiles/cross_tile 5
 T BMP_Tiles/end_tile 6
 P Character_Sprites/SpriteSheet.png
+S sounds/CNote8SecFade.wav sounds/ENote8SecFade.wav sounds/GNote8SecFade.wav sounds/BNote8SecFade.wav
