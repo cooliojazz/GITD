@@ -60,6 +60,14 @@ void Game::init(int width, int height) {
             player->setSouth(Mix_LoadWAV(files[2]));
             //Fourth - West
             player->setWest(Mix_LoadWAV(files[3]));
+            
+        } else if (firstChar == 'M') {
+            char file[256];
+            inputLine >> file;
+            gMusic = Mix_LoadMUS(file);
+            if (gMusic == NULL) {
+                cout << "Failed to load beat music! SDL_mixer Error:" << Mix_GetError() << endl;
+            }
         } else if (firstChar == 'L') {//create new level when level header (length, height) is read
             //LevelX = first read, levelY = second read
             inputLine >> levelX >> levelY;
@@ -150,17 +158,9 @@ int physloop(void* v) {
 
 int soundtrkloop(void* v) {
     Game* g = ((Game*)v);
-    //The Background music.
-    Mix_Music *gMusic = NULL;
-    //Load music
-    Mix_VolumeMusic(50);
-    gMusic = Mix_LoadMUS("sounds/cave.ogg");
-
-    if (gMusic == NULL) {
-        cout << "Failed to load beat music! SDL_mixer Error:" << Mix_GetError() << endl;
-        return 0;
-    }
-    Mix_PlayMusic(gMusic, -1);
+    
+    Mix_VolumeMusic(40);
+    Mix_PlayMusic(g->gMusic, -1);
     while (g->isRunning()) {
         if (g->musicpause) {
             Mix_PauseMusic();
@@ -211,8 +211,21 @@ void Game::render() {
         player->render(renderer, texman);
         SDL_RenderCopy(renderer, mask, NULL, createRect(player->getX() - 320, player->getY() - 320, 96 * 7, 96 * 7));
         if (player->getLaser()) {
-            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_RenderDrawLine(renderer, player->getX() + 16, player->getY() + 16, player->getLX(), player->getLY());
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50 + (int)(player->battery * 2));
+            switch (player->getFacing()) {
+                case NORTH:
+                    SDL_RenderDrawLine(renderer, player->getX() + 26, player->getY() + 14, player->getLX(), player->getLY());
+                    break;
+                case EAST:
+                    SDL_RenderDrawLine(renderer, player->getX() + 10, player->getY() + 24, player->getLX(), player->getLY());
+                    break;
+                case SOUTH:
+                    SDL_RenderDrawLine(renderer, player->getX() + 26, player->getY() + 21, player->getLX(), player->getLY());
+                    break;
+                case WEST:
+                    SDL_RenderDrawLine(renderer, player->getX() + 20, player->getY() + 24, player->getLX(), player->getLY());
+                    break;
+            }
         }
 
         SDL_Color textColor = {255, 255, 255};
@@ -252,12 +265,12 @@ void Game::handleEvents() {
         if (keyState[SDL_SCANCODE_D]) {
             player->move(EAST);
         }
-        if (keyState[SDL_SCANCODE_TAB] && player->battery > 0) {
+        if (keyState[SDL_SCANCODE_LSHIFT] && player->battery > 0) {
             player->laserOn();
         } else {
             player->laserOff();
         }
-        if (keyState[SDL_SCANCODE_Q]) {
+        if (keyState[SDL_SCANCODE_Q] && !musicpause) {
             musicpause = true;
             player->useBell();
         }

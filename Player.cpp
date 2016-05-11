@@ -8,7 +8,7 @@ void Player::physics(double ticks) {
         if (currentLevel->getTile(((int)tx) / 96, getY() / 96)->moveValid(createRect(((int)tx) % 96, getY() % 96, 32, 32))) {
             x = tx;
             currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
-            if (currentTile->getType() == EXIT) {
+            if (currentTile->getType() == EXIT && currentTile->getXLoc() * 96 + 32 - x < 5 && currentTile->getYLoc() * 96 + 32 - y < 5) {
                 cout << "Level finished!" << endl;
                 currentLevel = currentLevel->getNextLevel();
                 if (currentLevel != NULL) {
@@ -30,7 +30,7 @@ void Player::physics(double ticks) {
         if (currentLevel->getTile(getX() / 96, ((int)ty) / 96)->moveValid(createRect(getX() % 96, ((int)ty) % 96, 32, 32))) {
             y = ty;
             currentTile = currentLevel->getTile(getX() / 96, getY() / 96);
-            if (currentTile->getType() == EXIT) {
+            if (currentTile->getType() == EXIT && currentTile->getXLoc() * 96 + 32 - x < 5 && currentTile->getYLoc() * 96 + 32 - y < 5) {
                 cout << "Level finished!" << endl;
                 currentLevel = currentLevel->getNextLevel();
                 if (currentLevel != NULL) {
@@ -58,16 +58,32 @@ void Player::physics(double ticks) {
 
         //Recompute laser
         if (laser) {
-            battery -= .1 * ticks;
+            battery -= .05 * ticks;
             if (battery <= 0) {
                 battery = 0;
                 laserOff();
             }
         }
-        int tlx = 32;
-        int tly = 32;
-        tlx = getX() + 16;
-        tly = getY() + 16;
+        int tlx;
+        int tly;
+        switch (facing) {
+            case NORTH:
+                tlx = getX() + 26;
+                tly = getY() + 14;
+                break;
+            case EAST:
+                tlx = getX() + 10;
+                tly = getY() + 24;
+                break;
+            case SOUTH:
+                tlx = getX() + 26;
+                tly = getY() + 21;
+                break;
+            case WEST:
+                tlx = getX() + 20;
+                tly = getY() + 24;
+                break;
+        }
         while (tlx >= 0 && tlx <= 96 * getLevel()->getWidth() && tly >= 0 && tly <= 96 * getLevel()->getHeight() && currentLevel->getTile(tlx / 96, tly / 96)->moveValid(createRect(tlx % 96, tly % 96, 1, 1))) {
             switch (facing) {
                 case NORTH:
@@ -112,28 +128,20 @@ void Player::move(directionT direction) {
 }
 
 void Player::useBell() {
-    double xDiff = x / 96.0 - currentLevel->getEnd()->getXLoc() - 48 / 96.0; //The X-difference between the players current tile and the level's end tile
-    double yDiff = y / 96.0 - currentLevel->getEnd()->getYLoc() - 48 / 96.0; //The Y-difference between the players current tile and the level's end tile
+    double xDiff = abs(x / 96.0 - currentLevel->getEnd()->getXLoc() - 48 / 96.0); //The X-difference between the players current tile and the level's end tile
+    double yDiff = abs(y / 96.0 - currentLevel->getEnd()->getYLoc() - 48 / 96.0); //The Y-difference between the players current tile and the level's end tile
 
-    double distance = sqrt(xDiff * xDiff + yDiff * yDiff); //The straight distance between the player's tile and the end
-
-    int volLevel = (int)((currentLevel->getWidth() + 1 - distance) / 10.0 * 110.0);
-    Mix_Volume(-1, volLevel);
-
-    int ch;
+    Mix_Volume(1, (int)((currentLevel->getWidth() - xDiff) / currentLevel->getWidth() * 100.0));
     if (xDiff > 0)
-        //Play sound for West (send in distance as param for volume/loudness)
-        ch = Mix_PlayChannel(-1, West, 0);
+        Mix_PlayChannel(1, West, 0);
     else if (xDiff < 0)
-        //Play sound for East (send in distance as param for volume/loudness)
-        ch = Mix_PlayChannel(-1, East, 0);
-
+        Mix_PlayChannel(1, East, 0);
+    
+    Mix_Volume(2, (int)((currentLevel->getHeight() - yDiff) / currentLevel->getHeight() * 100.0));
     if (yDiff > 0)
-        //Play sound for North (send in distance as param for volume/loudness)
-        ch = Mix_PlayChannel(-1, North, 0);
+        Mix_PlayChannel(2, North, 0);
     else if (yDiff < 0)
-        //Play sound for South (send in distance as param for volume/loudness)
-        ch = Mix_PlayChannel(-1, South, 0);
+        Mix_PlayChannel(2, South, 0);
 }
 
 void Player::laserOn() {
@@ -224,7 +232,6 @@ void Player::assignSounds() {
 
 void Player::render(SDL_Renderer* renderer, TextureManager texman) {
     SDL_RenderCopy(renderer, texman.getPlayTexture(getFacing(), (int)anim), NULL, createRect(getX(), getY(), 32, 32));
-    //    SDL_RenderCopy(renderer, texman.getTileTexture(t->getType(), t->getRot()), NULL, createRect(x * 96, y * 96, 96, 96));
 }
 
 Tile* Player::getTile() {
